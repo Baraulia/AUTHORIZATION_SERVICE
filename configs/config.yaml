@@ -1,0 +1,1 @@
+##Для работы с файлом .yaml устанавливаем библиотеку  go get -u github.com/ilyakaznacheev/cleanenv
