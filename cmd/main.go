@@ -8,12 +8,12 @@ import (
 
 func main() {
 	http.HandleFunc("/", Hello)
-	err := http.ListenAndServe(":9000", nil)
+	err := http.ListenAndServe(":80", nil)
 	if err != nil {
 		logrus.Fatal("ListenAndServe: ", err)
 	}
 }
 
 func Hello(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello team!")
+	fmt.Fprintf(w, "Authorization service")
 }
