@@ -15,5 +15,8 @@ func main() {
 }
 
 func Hello(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello team!")
+	_, err := fmt.Fprintf(w, "Hello team!")
+	if err != nil {
+		return
+	}
 }
