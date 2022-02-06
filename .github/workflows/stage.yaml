@@ -59,6 +59,6 @@ jobs:
             # Run a new container from a new image
             docker run -e AUTH_SERVER_URL -d \
             --restart always \
-            --publish 82:82 \
+            --publish 8082:8082 \
             --name $(echo $CONTAINER_NAME) \
             $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7)
