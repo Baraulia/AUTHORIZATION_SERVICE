@@ -6,8 +6,10 @@ import (
 	"github.com/Baraulia/AUTHORIZATION_SERVICE/repository"
 )
 
+//go:generate mockgen -source=service.go -destination=mocks/service_mock.go
+
 type Authorization interface {
-	GenerateToken(username, password string) (string, error)
+	GenerateToken(email, password string) (string, error)
 	ParseToken(token string) (int, error)
 }
 

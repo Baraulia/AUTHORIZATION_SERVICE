@@ -6,8 +6,10 @@ import (
 	"github.com/Baraulia/AUTHORIZATION_SERVICE/model"
 )
 
+//go:generate mockgen -source=repository.go -destination=mocks/repository_mock.go
+
 type Authorization interface {
-	GetUser(username, password string) (*model.User, error)
+	GetUser(email, password string) (*model.User, error)
 }
 
 type RoleList interface {
