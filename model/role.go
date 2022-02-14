@@ -1,13 +1,13 @@
 package model
 
 type User struct {
-	ID       int    `json:"id" sql:"id"`
-	Email    string `json:"email" validate:"email" sql:"email"`
+	ID       int    `json:"id"       sql:"id"`
+	Email    string `json:"email"    validate:"email"    sql:"email"`
 	Password string `json:"password" validate:"password" sql:"password"`
 }
 
 type Role struct {
-	ID           int    `json:"id" sql:"id"`
+	ID           int    `json:"id"   sql:"id"`
 	Name         string `json:"name" validate:"name" sql:"name"`
 }
 
@@ -17,7 +17,7 @@ type Permission struct {
 }
 
 type Roles struct {
-	ID           int    `json:"id" sql:"id"`
+	ID           int    `json:"id"   sql:"id"`
 	Name         string `json:"name" validate:"name" sql:"name"`
 	Permissions  []Permission `json:"permissions"`
 }
