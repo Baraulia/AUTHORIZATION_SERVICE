@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github.com/Baraulia/AUTHORIZATION_SERVICE/model"
 	"net/http"
 	"strconv"
 
@@ -34,4 +35,34 @@ func (h *Handler) getRoleById(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, list)
+}
+
+func (h *Handler) createRole(c *gin.Context) {
+	var input model.Role
+	if err := c.ShouldBindJSON(&input); err != nil {
+		h.logger.Warnf("Handler createUser (binding JSON):%s", err)
+		c.JSON(http.StatusBadRequest, gin.H{"message": "invalid request"})
+		return
+	}
+	role, err := h.services.RoleList.CreateRole(&input)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusCreated, role)
+}
+
+func (h *Handler) createPermission(c *gin.Context) {
+	var input model.Permission
+	if err := c.ShouldBindJSON(&input); err != nil {
+		h.logger.Warnf("Handler createUser (binding JSON):%s", err)
+		c.JSON(http.StatusBadRequest, gin.H{"message": "invalid request"})
+		return
+	}
+	permission, err := h.services.RoleList.CreatePermission(&input)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusCreated, permission)
 }

@@ -13,8 +13,10 @@ type Authorization interface {
 }
 
 type RoleList interface {
-	GetById(id int) (*model.Role, error)
+	GetById(id int) (*model.Roles, error)
 	SelectPermission (id int) []model.Permission
+	CreateRole(role *model.Role) (*model.Role, error)
+	CreatePermission(permission *model.Permission)(*model.Permission, error)
 }
 
 type Repository struct {

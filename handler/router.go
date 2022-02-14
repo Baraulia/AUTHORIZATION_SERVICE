@@ -28,6 +28,8 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	{
 		lists := api.Group("/roles")
 		{
+			lists.POST("/", h.createRole)
+			lists.POST("/permission", h.createPermission)
 			lists.GET("/:id", h.getRoleById)
 		}
 	}

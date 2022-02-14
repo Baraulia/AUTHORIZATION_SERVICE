@@ -21,16 +21,16 @@ type tokenClaims struct {
 
 type AuthService struct {
 	logger logging.Logger
-	repo repository.Authorization
+	repo repository.Repository
 }
 
-func NewAuthService(repo repository.Authorization, logger logging.Logger) *AuthService {
+func NewAuthService(repo repository.Repository, logger logging.Logger) *AuthService {
 	return &AuthService{repo: repo, logger: logger}
 }
 
 
 func (s *AuthService) GenerateToken(email, password string) (string, error) {
-	user, err := s.repo.GetUser(email, password)
+	user, err := s.repo.Authorization.GetUser(email, password)
 	if err != nil {
 		return "", err
 	}

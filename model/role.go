@@ -9,10 +9,15 @@ type User struct {
 type Role struct {
 	ID           int    `json:"id" sql:"id"`
 	Name         string `json:"name" validate:"name" sql:"name"`
-	Permissions  []Permission `json:"permissions"`
 }
 
 type Permission struct {
 	ID             int    `json:"id" sql:"id"`
 	Description    string `json:"description" validate:"description" sql:"description"`
+}
+
+type Roles struct {
+	ID           int    `json:"id" sql:"id"`
+	Name         string `json:"name" validate:"name" sql:"name"`
+	Permissions  []Permission `json:"permissions"`
 }

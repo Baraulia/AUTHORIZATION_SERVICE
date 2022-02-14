@@ -14,8 +14,10 @@ type Authorization interface {
 }
 
 type RoleList interface {
-	GetById(id int) (*model.Role, error)
+	GetById(id int) (*model.Roles, error)
 	SelectPermission (id int) []model.Permission
+	CreateRole(role *model.Role) (*model.Role, error)
+	CreatePermission(permission *model.Permission)(*model.Permission, error)
 }
 
 type Service struct {
@@ -23,9 +25,9 @@ type Service struct {
 	RoleList
 }
 
-func NewService(repos *repository.Repository, logger logging.Logger) *Service {
+func NewService(rep *repository.Repository, logger logging.Logger) *Service {
 	return &Service{
-		Authorization: NewAuthService(repos.Authorization, logger),
-		RoleList:      NewRoleListService(repos.RoleList, logger),
+		Authorization: NewAuthService(*rep, logger),
+		RoleList:      NewRoleListService(*rep, logger),
 	}
 }
