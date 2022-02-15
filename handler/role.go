@@ -78,12 +78,13 @@ func (h *Handler) createRole(c *gin.Context) {
 // @Router /api/roles/permission [post]
 func (h *Handler) createPermission(c *gin.Context) {
 	var input model.Permission
+	role, err := strconv.Atoi(c.Param("role"))
 	if err := c.ShouldBindJSON(&input); err != nil {
 		h.logger.Warnf("Handler createUser (binding JSON):%s", err)
 		c.JSON(http.StatusBadRequest, gin.H{"message": "invalid request"})
 		return
 	}
-	permission, err := h.services.RoleList.CreatePermission(&input)
+	permission, err := h.services.RoleList.CreatePermission(&input, role)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return

@@ -19,6 +19,10 @@ func NewHandler(services *service.Service, logger logging.Logger) *Handler {
 func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.New()
 
+	router.Use(
+		CorsMiddleware,
+	)
+
 	auth := router.Group("/auth")
 	{
 		auth.POST("/sign-in", h.signIn)

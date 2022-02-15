@@ -17,7 +17,7 @@ type RoleList interface {
 	GetById(id int) (*model.Roles, error)
 	SelectPermission (id int) []model.Permission
 	CreateRole(role *model.Role) (*model.Role, error)
-	CreatePermission(permission *model.Permission)(*model.Permission, error)
+	CreatePermission(permission *model.Permission, role int)(*model.Permission, error)
 	CreateRoleToPermission(rp *model.RoleToPermission)(*model.RoleToPermission, error)
 }
 
