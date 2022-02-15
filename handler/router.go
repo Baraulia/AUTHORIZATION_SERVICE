@@ -30,6 +30,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		{
 			lists.POST("/", h.createRole)
 			lists.POST("/permission", h.createPermission)
+			lists.POST("/roleToPermission", h.createRoleToPermission)
 			lists.GET("/:id", h.getRoleById)
 		}
 	}

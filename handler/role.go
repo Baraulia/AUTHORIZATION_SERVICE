@@ -90,3 +90,30 @@ func (h *Handler) createPermission(c *gin.Context) {
 	}
 	c.JSON(http.StatusCreated, permission)
 }
+
+// @Summary Create Role to Permission
+// @Security ApiKeyAuth
+// @Tags permission
+// @Description create role to permission
+// @ID create-role-to-permission
+// @Accept  json
+// @Produce  json
+// @Success 200 {object}
+// @Failure 400,404 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /api/roles/roleToPermission [post]
+func (h *Handler) createRoleToPermission(c *gin.Context) {
+	var input model.RoleToPermission
+	if err := c.ShouldBindJSON(&input); err != nil {
+		h.logger.Warnf("Handler createUser (binding JSON):%s", err)
+		c.JSON(http.StatusBadRequest, gin.H{"message": "invalid request"})
+		return
+	}
+	permission, err := h.services.RoleList.CreateRoleToPermission(&input)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusCreated, permission)
+}

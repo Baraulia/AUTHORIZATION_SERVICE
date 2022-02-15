@@ -21,3 +21,8 @@ type Roles struct {
 	Name         string `json:"name" validate:"name" sql:"name"`
 	Permissions  []Permission `json:"permissions"`
 }
+
+type RoleToPermission struct {
+	RoleId           int    `json:"role_id"   sql:"role_id"`
+	PermissionId     int    `json:"permission_id"   sql:"permission_id"`
+}

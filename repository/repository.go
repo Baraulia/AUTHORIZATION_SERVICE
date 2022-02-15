@@ -17,6 +17,7 @@ type RoleList interface {
 	SelectPermission (id int) []model.Permission
 	CreateRole(role *model.Role) (*model.Role, error)
 	CreatePermission(permission *model.Permission)(*model.Permission, error)
+	CreateRoleToPermission(rp *model.RoleToPermission)(*model.RoleToPermission, error)
 }
 
 type Repository struct {

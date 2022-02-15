@@ -83,3 +83,38 @@ func (r *RoleListPostgres) CreatePermission(permission *model.Permission) (*mode
 	}
 	return &createdPerm, transaction.Commit()
 }
+
+func (r *RoleListPostgres) CreateRoleToPermission(rp *model.RoleToPermission) (*model.RoleToPermission, error) {
+	transaction, err := r.db.Begin()
+	if err != nil {
+		r.logger.Errorf("CreateRP: can not starts transaction:%s", err)
+		return nil, fmt.Errorf("createRP: can not starts transaction:%w", err)
+	}
+	var createdRP model.RoleToPermission
+	defer transaction.Rollback()
+	row := transaction.QueryRow("INSERT INTO role_permissions (role_id, permission_id) VALUES ($1, $2) RETURNING role_id, permission_id", rp.RoleId, rp.PermissionId )
+	if err := row.Scan(&createdRP.RoleId, &createdRP.PermissionId); err != nil {
+		r.logger.Errorf("CreateRP: error while scanning for permission:%s", err)
+		return nil, fmt.Errorf("createRP: error while scanning for permission:%w", err)
+	}
+	return &createdRP, transaction.Commit()
+}
+
+
+//function to create relation via query parameters
+
+//func (r *RoleListPostgres) createRoleToPerm(id1 , id2 int){
+//	transaction, err := r.db.Begin()
+//	if err != nil {
+//		r.logger.Errorf("CreateR: can not starts transaction:%s", err)
+//	}
+//
+//	defer transaction.Rollback()
+//	err2 := transaction.QueryRow(
+//		"INSERT INTO role_permissions(role_id, permission_id) VALUES($1, $2)", id1, id2)
+//	if err2 != nil {
+//		return
+//	}
+//	transaction.Commit()
+//	return
+//}
