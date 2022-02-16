@@ -23,7 +23,7 @@ func (s *RoleListService) GetById(id int) (*model.Roles, error) {
 	return g, nil
 }
 
-func (s *RoleListService) SelectPermission(id int) []model.Permission {
+func (s *RoleListService) SelectPermission(id int) ([]model.Permission,error) {
 	return s.repo.RoleList.SelectPermission(id)
 }
 

@@ -21,34 +21,45 @@ func (r *RoleListPostgres) GetById(id int) (*model.Roles, error) {
 	transaction, err := r.db.Begin()
 	if err != nil {
 		logrus.Errorf("GetByID: can not starts transaction:%s", err)
-		return nil, fmt.Errorf("getByID: can not starts transaction:%w", err)
+		return nil, fmt.Errorf("GetByID: can not starts transaction:%w", err)
 	}
 	var role model.Roles
-	result := transaction.QueryRow("SELECT id, name FROM roles WHERE id = $1", id)
-	if err := result.Scan(&role.ID, &role.Name); err != nil {
-		logrus.Errorf("GetByID: error while scanning for user:%s", err)
-		return nil, fmt.Errorf("getByID: repository error:%w", err)
+	query := "SELECT id, name FROM roles WHERE id = $1"
+	row := transaction.QueryRow(query, id)
+	if err := row.Scan(&role.ID, &role.Name); err != nil {
+		logrus.Errorf("GetByID: error while scanning for book:%s", err)
+		return nil, fmt.Errorf("GetByID: repository error:%w", err)
 	}
-	role.Permissions = r.SelectPermission(role.ID)
+	role.Permissions, err = r.SelectPermission(role.ID)
+	if err != nil {
+		return nil, fmt.Errorf("error while getting bound roles:%w", err)
+	}
 	return &role, transaction.Commit()
 }
 
-func (r *RoleListPostgres) SelectPermission(id int) []model.Permission {
-	permissions := []model.Permission{}
+
+func (r *RoleListPostgres) SelectPermission(id int) ([]model.Permission, error) {
 	transaction, err := r.db.Begin()
 	if err != nil {
-		logrus.Errorf("GetPermission: can not starts transaction:%s", err)
-		return nil
+		logrus.Errorf("ReturnPermission: can not starts transaction:%s", err)
+		return nil, fmt.Errorf("ReturnPermission: can not starts transaction:%s", err)
 	}
-	var permission model.Permission
-	result := transaction.QueryRow("SELECT id, description FROM permissions JOIN role_permissions ON permissions.id = role_permissions.permission_id AND role_permissions.role_id = $1", id)
-	if err := result.Scan(&permission.ID, &permission.Description); err != nil {
-		logrus.Errorf("GetPermission: error while scanning:%s", err)
-		return nil
+	var permissions []model.Permission
+	query := "SELECT id, description FROM permissions JOIN role_permissions ON permissions.id = role_permissions.permission_id AND role_permissions.role_id = $1"
+	rows, err := transaction.Query(query, id)
+	if err != nil {
+		logrus.Errorf("ReturnPermission: can not executes a query:%s", err)
+		return nil, fmt.Errorf("ReturnPermission: repository error:%w", err)
 	}
-	transaction.Commit()
-	permissions = append(permissions, permission)
-	return permissions
+	for rows.Next() {
+		var permission model.Permission
+		if err := rows.Scan(&permission.ID, &permission.Description); err != nil {
+			logrus.Errorf("ReturnPermission: error while scanning :%s", err)
+			return nil, fmt.Errorf("ReturnPermission: repository error:%w", err)
+		}
+		permissions = append(permissions, permission)
+	}
+	return permissions, transaction.Commit()
 }
 
 func (r *RoleListPostgres) CreateRole(role *model.Role) (*model.Role, error) {

@@ -15,7 +15,7 @@ type Authorization interface {
 
 type RoleList interface {
 	GetById(id int) (*model.Roles, error)
-	SelectPermission (id int) []model.Permission
+	SelectPermission (id int) ([]model.Permission,error)
 	CreateRole(role *model.Role) (*model.Role, error)
 	CreatePermission(permission *model.Permission)(*model.Permission, error)
 	CreateRoleToPermission(rp *model.RoleToPermission)(*model.RoleToPermission, error)
