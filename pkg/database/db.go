@@ -64,14 +64,6 @@ const REFERENCE_SCHEMA = `
 		CREATE TABLE IF NOT EXISTS role_permissions (
 		role_id int references roles(id) on delete cascade,
 		permission_id int references permissions(id) on delete cascade,
-		PRIMARY KEY(role_id, permission_id)
+		CONSTRAINT role_permissions_pkey PRIMARY KEY(role_id, permission_id)
 	);
-	CREATE TABLE IF NOT EXISTS usersss (
-		id serial not null,
-		role_id int not null,
-		user_id int not null,
-		PRIMARY KEY (id),
-		FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE,
-		FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-		);
 `

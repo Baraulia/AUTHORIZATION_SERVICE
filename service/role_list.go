@@ -35,8 +35,8 @@ func (s *RoleListService) CreateRole(role *model.Role) (*model.Role, error) {
 	return result, nil
 }
 
-func (s *RoleListService) CreatePermission(permission *model.Permission, role int) (*model.Permission, error) {
-	result, err := s.repo.RoleList.CreatePermission(permission, role)
+func (s *RoleListService) CreatePermission(permission *model.Permission) (*model.Permission, error) {
+	result, err := s.repo.RoleList.CreatePermission(permission)
 	if err != nil {
 		return nil, err
 	}

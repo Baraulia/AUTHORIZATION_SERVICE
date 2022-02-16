@@ -34,20 +34,20 @@ func (r *RoleListPostgres) GetById(id int) (*model.Roles, error) {
 }
 
 func (r *RoleListPostgres) SelectPermission(id int) []model.Permission {
+	permissions := []model.Permission{}
 	transaction, err := r.db.Begin()
 	if err != nil {
-		logrus.Errorf("GetByID: can not starts transaction:%s", err)
+		logrus.Errorf("GetPermission: can not starts transaction:%s", err)
 		return nil
 	}
-	var permissions []model.Permission
 	var permission model.Permission
 	result := transaction.QueryRow("SELECT id, description FROM permissions JOIN role_permissions ON permissions.id = role_permissions.permission_id AND role_permissions.role_id = $1", id)
 	if err := result.Scan(&permission.ID, &permission.Description); err != nil {
-		logrus.Errorf("GetByID: error while scanning for user:%s", err)
+		logrus.Errorf("GetPermission: error while scanning:%s", err)
 		return nil
 	}
-	permissions = append(permissions, permission)
 	transaction.Commit()
+	permissions = append(permissions, permission)
 	return permissions
 }
 
@@ -67,7 +67,7 @@ func (r *RoleListPostgres) CreateRole(role *model.Role) (*model.Role, error) {
 	return &createdRole, transaction.Commit()
 }
 
-func (r *RoleListPostgres) CreatePermission(permission *model.Permission, role int) (*model.Permission, error) {
+func (r *RoleListPostgres) CreatePermission(permission *model.Permission) (*model.Permission, error) {
 	transaction, err := r.db.Begin()
 	if err != nil {
 		r.logger.Errorf("CreatePermission: can not starts transaction:%s", err)
@@ -80,9 +80,6 @@ func (r *RoleListPostgres) CreatePermission(permission *model.Permission, role i
 		r.logger.Errorf("CreatePermission: error while scanning for permission:%s", err)
 		return nil, fmt.Errorf("createPermission: error while scanning for permission:%w", err)
 	}
-	//if role != 0{
-	//	r.CreateRTP(role, createdPerm.ID)
-	//}
 	return &createdPerm, transaction.Commit()
 }
 
@@ -102,21 +99,3 @@ func (r *RoleListPostgres) CreateRoleToPermission(rp *model.RoleToPermission) (*
 	return &createdRP, transaction.Commit()
 }
 
-
-//function to create relation via query parameters
-
-//func (r *RoleListPostgres) CreateRTP(id1, id2 int) error{
-//	transaction, err := r.db.Begin()
-//	if err != nil {
-//		r.logger.Errorf("CreateRP: can not starts transaction:%s", err)
-//		return fmt.Errorf("createRP: can not starts transaction:%w", err)
-//	}
-//	var createdRP model.RoleToPermission
-//	defer transaction.Rollback()
-//	row := transaction.QueryRow("INSERT INTO role_permissions (role_id, permission_id) VALUES ($1, $2)", id1, id2)
-//	if err := row.Scan(createdRP.RoleId, createdRP.PermissionId); err != nil {
-//		r.logger.Errorf("CreateRP: error while scanning for permission:%s", err)
-//		return fmt.Errorf("createRP: error while scanning for permission:%w", err)
-//	}
-//	return transaction.Commit()
-//}
