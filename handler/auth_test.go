@@ -39,21 +39,6 @@ func TestHandler_authUser(t *testing.T) {
 			expectedRequestBody: `{"token":"token"}`,
 		},
 		{
-			name:                "Empty fields",
-			inputBody:           `{"email":"aaaaaaa@gmail.com"}`,
-			inputUser:           model.User{},
-			mockBehavior:        func(s *mock_service.MockAuthorization, user model.User) {},
-			expectedStatusCode:  400,
-			expectedRequestBody: `{"message":"invalid input body"}`,
-		},
-		{
-			name:                 "No Input",
-			inputBody:            `{}`,
-			mockBehavior:         func(r *mock_service.MockAuthorization, user model.User) {},
-			expectedStatusCode:   400,
-			expectedRequestBody: `{"error":"invalid input body"}`,
-		},
-		{
 			name:      "Service Failure",
 			inputBody: `{"email":"aaaaaaa@gmail.com", "password":"aaa111"}`,
 			inputUser: model.User{
