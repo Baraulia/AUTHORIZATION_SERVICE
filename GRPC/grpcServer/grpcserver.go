@@ -2,13 +2,11 @@ package grpcServer
 
 import (
 	"context"
-	"fmt"
 	auth_proto "github.com/Baraulia/AUTHORIZATION_SERVICE/GRPC"
 	"github.com/Baraulia/AUTHORIZATION_SERVICE/pkg/logging"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"net"
-	"os"
 )
 
 var logger = logging.GetLogger()
@@ -19,7 +17,7 @@ func NewGRPCServer() {
 	s := grpc.NewServer()
 	str := &GRPCServer{}
 	auth_proto.RegisterAuthServer(s, str)
-	lis, err := net.Listen("tcp", fmt.Sprintf("%s:8090", os.Getenv("HOST")))
+	lis, err := net.Listen("tcp", ":8090")
 	if err != nil {
 		logger.Fatalf("NewGRPCServer, Listen:%s", err)
 	}
