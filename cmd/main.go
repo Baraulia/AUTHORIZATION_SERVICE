@@ -42,7 +42,9 @@ func main() {
 		}
 	}()
 
-	grpcServer.NewGRPCServer()
+	go func() {
+		grpcServer.NewGRPCServer()
+	}()
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
