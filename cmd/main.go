@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"github.com/Baraulia/AUTHENTICATION_SERVICE/pkg/logging"
+	"github.com/Baraulia/AUTHORIZATION_SERVICE/GRPC/grpcServer"
 	"github.com/Baraulia/AUTHORIZATION_SERVICE/handler"
 	"github.com/Baraulia/AUTHORIZATION_SERVICE/pkg/database"
 	"github.com/Baraulia/AUTHORIZATION_SERVICE/repository"
@@ -40,6 +41,9 @@ func main() {
 			logger.Panicf("Error occured while running http server: %s", err.Error())
 		}
 	}()
+
+	grpcServer.NewGRPCServer()
+
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
 	<-quit
