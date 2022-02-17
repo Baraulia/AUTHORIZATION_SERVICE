@@ -83,7 +83,7 @@ jobs:
             # Run a new container from a new image
             docker run -e AUTH_SERVER_URL -e DB_PORT -e DB_USER -e DB_PASSWORD -e HOST -e DB_DATABASE \
             -e DB_SSL_MODE -e API_SERVER_PORT -d \
-            --restart always \
-            --publish 8082:80 -- publish 8090:8090\
+            -p 8082:80 -p 8090:8090\
+            --restart always \            
             --name $(echo $CONTAINER_NAME) \
             $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7)
