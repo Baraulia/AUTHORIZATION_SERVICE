@@ -74,9 +74,9 @@ const REFERENCE_SCHEMA = `
 `
 
 const USER_ROLE_SCHEMA = `
-		CREATE TABLE IF NOT EXIST user_role (
-		role_id int references roles(id) on delete protect,
+		CREATE TABLE IF NOT EXISTS user_role (
+		role_id int DEFAULT 1 references roles(id) on delete SET DEFAULT,
 		user_id int,
-		CONSTRAINT role_permissions_pkey PRIMARY KEY(role_id, user_id)		
+		CONSTRAINT role_user_pkey PRIMARY KEY(role_id, user_id)		
 );
 `
