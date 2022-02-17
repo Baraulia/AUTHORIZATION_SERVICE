@@ -44,6 +44,11 @@ func NewPostgresDB(database PostgresDB) (*sql.DB, error) {
 		database.logger.Errorf("Error executing initial migration into permission:%s", err)
 		return nil, fmt.Errorf("error executing initial migration into permission:%s", err)
 	}
+	_, err = db.Exec(USER_ROLE_SCHEMA)
+	if err != nil {
+		database.logger.Errorf("Error executing initial migration into permission:%s", err)
+		return nil, fmt.Errorf("error executing initial migration into permission:%s", err)
+	}
 	return db, nil
 }
 
@@ -66,4 +71,12 @@ const REFERENCE_SCHEMA = `
 		permission_id int references permissions(id) on delete cascade,
 		CONSTRAINT role_permissions_pkey PRIMARY KEY(role_id, permission_id)
 	);
+`
+
+const USER_ROLE_SCHEMA = `
+		CREATE TABLE IF NOT EXIST user_role (
+		role_id int references roles(id) on delete protect,
+		user_id int,
+		CONSTRAINT role_permissions_pkey PRIMARY KEY(role_id, user_id)		
+);
 `

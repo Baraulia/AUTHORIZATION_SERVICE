@@ -7,22 +7,28 @@ type User struct {
 }
 
 type Role struct {
-	ID           int    `json:"id"   sql:"id"`
-	Name         string `json:"name" validate:"name" sql:"name"`
+	ID   int    `json:"id"   sql:"id"`
+	Name string `json:"name" validate:"name" sql:"name"`
 }
 
 type Permission struct {
-	ID             int    `json:"id" sql:"id"`
-	Description    string `json:"description" validate:"description" sql:"description"`
+	ID          int    `json:"id" sql:"id"`
+	Description string `json:"description" validate:"description" sql:"description"`
 }
 
 type Roles struct {
-	ID           int    `json:"id"   sql:"id"`
-	Name         string `json:"name" validate:"name" sql:"name"`
-	Permissions  []Permission `json:"permissions"`
+	ID          int          `json:"id"   sql:"id"`
+	Name        string       `json:"name" validate:"name" sql:"name"`
+	Permissions []Permission `json:"permissions"`
 }
 
 type RoleToPermission struct {
-	RoleId           int    `json:"role_id"   sql:"role_id"`
-	PermissionId     int    `json:"permission_id"   sql:"permission_id"`
+	RoleId       int `json:"role_id"   sql:"role_id"`
+	PermissionId int `json:"permission_id"   sql:"permission_id"`
+}
+
+type ResponseUser struct {
+	Id          int
+	Roles       []string
+	Permissions []string
 }
