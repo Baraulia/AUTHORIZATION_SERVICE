@@ -17,7 +17,7 @@ func NewGRPCServer() {
 	s := grpc.NewServer()
 	str := &GRPCServer{}
 	auth_proto.RegisterAuthServer(s, str)
-	lis, err := net.Listen("tcp", "159.223.1.135:8090")
+	lis, err := net.Listen("tcp", ":8090")
 	if err != nil {
 		logger.Fatalf("NewGRPCServer, Listen:%s", err)
 	}
