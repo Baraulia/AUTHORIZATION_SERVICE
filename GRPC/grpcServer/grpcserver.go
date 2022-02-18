@@ -2,12 +2,12 @@ package grpcServer
 
 import (
 	"context"
-	"fmt"
 	auth_proto "github.com/Baraulia/AUTHORIZATION_SERVICE/GRPC"
 	"github.com/Baraulia/AUTHORIZATION_SERVICE/pkg/logging"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"net"
+	"strconv"
 )
 
 var logger = logging.GetLogger()
@@ -45,8 +45,8 @@ func (g *GRPCServer) TokenGenerationByRefresh(context.Context, *auth_proto.Refre
 func (g *GRPCServer) TokenGenerationById(ctx context.Context, user *auth_proto.User) (*auth_proto.GeneratedTokens, error) {
 
 	return &auth_proto.GeneratedTokens{
-		AccessToken:  fmt.Sprintf("UserId:%d", user.UserId),
-		RefreshToken: user.Role,
+		AccessToken:  strconv.Itoa(int(user.UserId)),
+		RefreshToken: "jjkgkjg",
 	}, nil
 }
 func (g *GRPCServer) GetSalt(context.Context, *auth_proto.ReqSalt) (*auth_proto.Salt, error) {
