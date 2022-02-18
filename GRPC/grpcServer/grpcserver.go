@@ -43,9 +43,7 @@ func (g *GRPCServer) TokenGenerationByRefresh(context.Context, *auth_proto.Refre
 	return nil, nil
 }
 func (g *GRPCServer) TokenGenerationById(ctx context.Context, user *auth_proto.User) (*auth_proto.GeneratedTokens, error) {
-	if user.Role == "" {
-		user.Role = "Superadmin"
-	}
+
 	return &auth_proto.GeneratedTokens{
 		AccessToken:  fmt.Sprintf("UserId:%d", user.UserId),
 		RefreshToken: user.Role,
