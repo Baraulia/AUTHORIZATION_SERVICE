@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <changeSet id="6" author="T6">
+        <sql>
+            INSERT INTO permissions (id, description) VALUES (1,'create_profile'),
+            (2,'create_orders'),
+            (3,'create_menu'),
+            (4,'create_restaurant_manager_feedback'),
+            (5,'create_courier'),
+            (6,'create_customer_profile'),
+            (7,'create_restaurant_manager'),
+            (8,'create_courier_manager'),
+            (9,'create_restaurant_info'),
+            (10,'create_courier_service_information'),
+            (11,'create_active_orders'),
+            (12,'create_completed_orders'),
+            (13,'create_order_status'),
+            (14,'create_customer_feedback'),
+            (15,'create_feedback'),
+
+            (16,'read_restaurant_info'),
+            (17,'read_menu'),
+            (18,'read_customers_feedback'),
+            (19,'read_profile'),
+            (20,'read_courier'),
+            (21,'read_active_orders'),
+            (22,'read_completed_orders'),
+            (23,'read_order_status'),
+            (24,'read_restaurant_manager_feedback'),
+            (25,'read_courier_manager'),
+            (26,'read_courier_service_information'),
+            (27,'read_customer_profile'),
+            (28,'read_restaurant_manager'),
+
+            (29,'update_profile'),
+            (30,'update_order_status'),
+            (31,'update_feedback'),
+            (32,'update_restaurant_manager'),
+            (33,'update_restaurant_info'),
+            (34,'update_menu'),
+            (35,'update_active_orders'),
+            (36,'update_restaurant_manager_feedback'),
+            (37,'update_courier_manager'),
+            (38,'update_courier'),
+            (39,'update_courier_service_information'),
+            (40,'update_customer_profile'),
+            (41,'update_completed_orders'),
+            (42,'update_customer_feedback'),
+
+            (43,'delete_profile'),
+            (44,'delete_active_orders'),
+            (45,'delete_feedback'),
+            (46,'delete_menu'),
+            (47,'delete_courier'),
+            (48,'delete_customer_profile'),
+            (49,'delete_restaurant_manager'),
+            (50,'delete_courier_manager'),
+            (51,'delete_restaurant_info'),
+            (52,'delete_courier_service_information'),
+            (53,'delete_completed_orders'),
+            (54,'delete_order_status'),
+            (55,'delete_customer_feedback'),
+            (56,'delete_restaurant_manager_feedback');
+        </sql>
+        <rollback>
+            <sql>
+                DELETE FROM permissions;
+            </sql>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
