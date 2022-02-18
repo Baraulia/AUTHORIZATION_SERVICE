@@ -7,7 +7,6 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"net"
-	"strconv"
 )
 
 var logger = logging.GetLogger()
@@ -43,9 +42,8 @@ func (g *GRPCServer) TokenGenerationByRefresh(context.Context, *auth_proto.Refre
 	return nil, nil
 }
 func (g *GRPCServer) TokenGenerationById(ctx context.Context, user *auth_proto.User) (*auth_proto.GeneratedTokens, error) {
-
 	return &auth_proto.GeneratedTokens{
-		AccessToken:  strconv.Itoa(int(user.UserId)),
+		AccessToken:  "hjhjgkj",
 		RefreshToken: "jjkgkjg",
 	}, nil
 }
