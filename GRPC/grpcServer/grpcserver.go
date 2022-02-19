@@ -37,7 +37,9 @@ func (g *GRPCServer) GetUserWithRights(ctx context.Context, request *auth_proto.
 	}, nil
 }
 func (g *GRPCServer) CheckToken(context.Context, *auth_proto.AccessToken) (*auth_proto.Result, error) {
-	return nil, nil
+	return &auth_proto.Result{
+		Result: true,
+	}, nil
 }
 func (g *GRPCServer) TokenGenerationByRefresh(context.Context, *auth_proto.RefreshToken) (*auth_proto.GeneratedTokens, error) {
 	return nil, nil
