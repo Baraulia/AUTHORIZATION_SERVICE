@@ -1,1 +1,27 @@
 ##Для работы с файлом .yaml устанавливаем библиотеку  go get -u github.com/ilyakaznacheev/cleanenv
+#is_debug: true
+#file_path: "/home/sergey/IndTask/"
+#
+#listen:
+#  type: "port"
+#  port: "8000"
+#  bind_ip: "0.0.0.0"
+#
+#db:
+#  host: "localhost"
+#  port: "5436"
+#  username: "baraulia"
+#  dbname: "baraulia"
+#  password: "qwerty"
+#  sslmode: "disable"
+#
+#mail:
+#  from: "bgmebel.by@yandex.ru"
+#  password: "Bar2240458"
+#  smtpHost: "smtp.yandex.ru"
+#  smtpPort: "587"
+#  subject: "Super Library"
+#
+#profit_book:
+#  profitability: 1.3
+#  max_rental_number: 100
