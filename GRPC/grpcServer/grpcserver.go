@@ -2,11 +2,11 @@ package grpcServer
 
 import (
 	"context"
-	auth_proto "github.com/Baraulia/AUTHORIZATION_SERVICE/GRPC"
-	"github.com/Baraulia/AUTHORIZATION_SERVICE/pkg/logging"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"net"
+	auth_proto "stlab.itechart-group.com/go/food_delivery/authorization_service/GRPC"
+	"stlab.itechart-group.com/go/food_delivery/authorization_service/pkg/logging"
 	"strconv"
 )
 

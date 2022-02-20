@@ -1,11 +1,10 @@
 package service
 
 import (
-
 	"errors"
 	"github.com/Baraulia/AUTHENTICATION_SERVICE/pkg/logging"
-	"github.com/Baraulia/AUTHORIZATION_SERVICE/repository"
 	"github.com/dgrijalva/jwt-go"
+	"stlab.itechart-group.com/go/food_delivery/authorization_service/repository"
 	"time"
 )
 
@@ -21,13 +20,12 @@ type tokenClaims struct {
 
 type AuthService struct {
 	logger logging.Logger
-	repo repository.Repository
+	repo   repository.Repository
 }
 
 func NewAuthService(repo repository.Repository, logger logging.Logger) *AuthService {
 	return &AuthService{repo: repo, logger: logger}
 }
-
 
 func (s *AuthService) GenerateToken(email, password string) (string, error) {
 	user, err := s.repo.Authorization.GetUser(email, password)
@@ -65,4 +63,3 @@ func (s *AuthService) ParseToken(accessToken string) (int, error) {
 
 	return claims.UserId, nil
 }
-

@@ -3,7 +3,7 @@ package repository
 import (
 	"database/sql"
 	"github.com/Baraulia/AUTHENTICATION_SERVICE/pkg/logging"
-	"github.com/Baraulia/AUTHORIZATION_SERVICE/model"
+	"stlab.itechart-group.com/go/food_delivery/authorization_service/model"
 )
 
 //go:generate mockgen -source=repository.go -destination=mocks/repository_mock.go
@@ -14,10 +14,10 @@ type Authorization interface {
 
 type RoleList interface {
 	GetById(id int) (*model.Roles, error)
-	SelectPermission (id int) ([]model.Permission,error)
+	SelectPermission(id int) ([]model.Permission, error)
 	CreateRole(role *model.Role) (*model.Role, error)
-	CreatePermission(permission *model.Permission)(*model.Permission, error)
-	CreateRoleToPermission(rp *model.RoleToPermission)(*model.RoleToPermission, error)
+	CreatePermission(permission *model.Permission) (*model.Permission, error)
+	CreateRoleToPermission(rp *model.RoleToPermission) (*model.RoleToPermission, error)
 }
 
 type Repository struct {

@@ -7,8 +7,8 @@ package mock_service
 import (
 	reflect "reflect"
 
-	model "github.com/Baraulia/AUTHORIZATION_SERVICE/model"
 	gomock "github.com/golang/mock/gomock"
+	model "stlab.itechart-group.com/go/food_delivery/authorization_service/model"
 )
 
 // MockAuthorization is a mock of Authorization interface.

@@ -2,14 +2,13 @@ package handler
 
 import (
 	"github.com/Baraulia/AUTHENTICATION_SERVICE/pkg/logging"
-	"github.com/Baraulia/AUTHORIZATION_SERVICE/service"
 	"github.com/gin-gonic/gin"
-
+	"stlab.itechart-group.com/go/food_delivery/authorization_service/service"
 )
 
 type Handler struct {
 	services *service.Service
-	logger  logging.Logger
+	logger   logging.Logger
 }
 
 func NewHandler(services *service.Service, logger logging.Logger) *Handler {

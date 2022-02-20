@@ -1,13 +1,12 @@
 package handler
 
 import (
-	"github.com/Baraulia/AUTHORIZATION_SERVICE/model"
 	"net/http"
+	"stlab.itechart-group.com/go/food_delivery/authorization_service/model"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
-
 
 // @Summary Get Role By Id
 // @Security ApiKeyAuth

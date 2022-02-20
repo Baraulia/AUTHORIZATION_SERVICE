@@ -1,13 +1,11 @@
 package handler
 
 import (
-	"github.com/Baraulia/AUTHORIZATION_SERVICE/model"
 	"net/http"
+	"stlab.itechart-group.com/go/food_delivery/authorization_service/model"
 
 	"github.com/gin-gonic/gin"
-
 )
-
 
 // @Summary SignIn
 // @Tags auth

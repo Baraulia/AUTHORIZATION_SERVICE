@@ -3,12 +3,12 @@ package handler
 import (
 	"errors"
 	"github.com/Baraulia/AUTHENTICATION_SERVICE/pkg/logging"
-	"github.com/Baraulia/AUTHORIZATION_SERVICE/service"
-	mock_service "github.com/Baraulia/AUTHORIZATION_SERVICE/service/mocks"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/assert/v2"
 	"github.com/golang/mock/gomock"
 	"net/http/httptest"
+	"stlab.itechart-group.com/go/food_delivery/authorization_service/service"
+	mock_service "stlab.itechart-group.com/go/food_delivery/authorization_service/service/mocks"
 	"testing"
 )
 

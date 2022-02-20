@@ -1,4 +1,4 @@
-module github.com/Baraulia/AUTHORIZATION_SERVICE
+module stlab.itechart-group.com/go/food_delivery/authorization_service
 
 go 1.17
 

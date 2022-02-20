@@ -4,13 +4,13 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/Baraulia/AUTHENTICATION_SERVICE/pkg/logging"
-	"github.com/Baraulia/AUTHORIZATION_SERVICE/model"
 	"github.com/sirupsen/logrus"
+	"stlab.itechart-group.com/go/food_delivery/authorization_service/model"
 )
 
 type RoleListPostgres struct {
 	logger logging.Logger
-	db *sql.DB
+	db     *sql.DB
 }
 
 func NewRoleListPostgres(db *sql.DB, logger logging.Logger) *RoleListPostgres {
@@ -36,7 +36,6 @@ func (r *RoleListPostgres) GetById(id int) (*model.Roles, error) {
 	}
 	return &role, transaction.Commit()
 }
-
 
 func (r *RoleListPostgres) SelectPermission(id int) ([]model.Permission, error) {
 	transaction, err := r.db.Begin()
@@ -102,11 +101,10 @@ func (r *RoleListPostgres) CreateRoleToPermission(rp *model.RoleToPermission) (*
 	}
 	var createdRP model.RoleToPermission
 	defer transaction.Rollback()
-	row := transaction.QueryRow("INSERT INTO role_permissions (role_id, permission_id) VALUES ($1, $2) RETURNING role_id, permission_id", rp.RoleId, rp.PermissionId )
+	row := transaction.QueryRow("INSERT INTO role_permissions (role_id, permission_id) VALUES ($1, $2) RETURNING role_id, permission_id", rp.RoleId, rp.PermissionId)
 	if err := row.Scan(&createdRP.RoleId, &createdRP.PermissionId); err != nil {
 		r.logger.Errorf("CreateRP: error while scanning for permission:%s", err)
 		return nil, fmt.Errorf("createRP: error while scanning for permission:%w", err)
 	}
 	return &createdRP, transaction.Commit()
 }
-

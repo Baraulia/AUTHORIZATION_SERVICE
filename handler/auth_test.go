@@ -4,22 +4,21 @@ import (
 	"bytes"
 	"errors"
 	"github.com/Baraulia/AUTHENTICATION_SERVICE/pkg/logging"
-	"github.com/Baraulia/AUTHORIZATION_SERVICE/model"
-	"github.com/Baraulia/AUTHORIZATION_SERVICE/service"
-	mock_service "github.com/Baraulia/AUTHORIZATION_SERVICE/service/mocks"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/assert/v2"
 	"github.com/golang/mock/gomock"
 	"net/http/httptest"
+	"stlab.itechart-group.com/go/food_delivery/authorization_service/model"
+	"stlab.itechart-group.com/go/food_delivery/authorization_service/service"
+	mock_service "stlab.itechart-group.com/go/food_delivery/authorization_service/service/mocks"
 	"testing"
 )
-
 
 func TestHandler_authUser(t *testing.T) {
 	type mockBehavior func(s *mock_service.MockAuthorization, user model.User)
 	testTable := []struct {
-		name                string         //the name of the test
-		inputBody           string         //the body of the request
+		name                string     //the name of the test
+		inputBody           string     //the body of the request
 		inputUser           model.User //the structure which we send to the service
 		mockBehavior        mockBehavior
 		expectedStatusCode  int    //expected code

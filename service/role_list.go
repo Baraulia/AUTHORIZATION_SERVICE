@@ -2,13 +2,13 @@ package service
 
 import (
 	"github.com/Baraulia/AUTHENTICATION_SERVICE/pkg/logging"
-	"github.com/Baraulia/AUTHORIZATION_SERVICE/model"
-	"github.com/Baraulia/AUTHORIZATION_SERVICE/repository"
+	"stlab.itechart-group.com/go/food_delivery/authorization_service/model"
+	"stlab.itechart-group.com/go/food_delivery/authorization_service/repository"
 )
 
 type RoleListService struct {
 	logger logging.Logger
-	repo repository.Repository
+	repo   repository.Repository
 }
 
 func NewRoleListService(repo repository.Repository, logger logging.Logger) *RoleListService {
@@ -23,7 +23,7 @@ func (s *RoleListService) GetById(id int) (*model.Roles, error) {
 	return g, nil
 }
 
-func (s *RoleListService) SelectPermission(id int) ([]model.Permission,error) {
+func (s *RoleListService) SelectPermission(id int) ([]model.Permission, error) {
 	return s.repo.RoleList.SelectPermission(id)
 }
 
