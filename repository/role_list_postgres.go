@@ -102,7 +102,7 @@ func (r *RoleListPostgres) CreateRoleToPermission(rp *model.RoleToPermission) er
 	}
 	var createdRP model.RoleToPermission
 	defer transaction.Rollback()
-	row := transaction.QueryRow("INSERT INTO role_permissions (role_id, permission_id) VALUES ($1, $2) RETURNING role_id, permission_id", rp.RoleId, rp.PermissionId)
+	row := transaction.QueryRow("INSERT INTO role_permissions (role_id, permission_id) VALUES ($1, $2)", rp.RoleId, rp.PermissionId)
 	if err := row.Scan(&createdRP.RoleId, &createdRP.PermissionId); err != nil {
 		r.logger.Errorf("CreateRP: error while scanning for permission:%s", err)
 		return fmt.Errorf("createRP: error while scanning for permission:%w", err)

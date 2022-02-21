@@ -27,7 +27,7 @@ func (h *Handler) getRoleById(c *gin.Context) {
 		return
 	}
 
-	list, err := h.services.RoleList.GetById(id)
+	list, err := h.services.RoleList.GetRoleById(id)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -109,10 +109,10 @@ func (h *Handler) createRoleToPermission(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "invalid request"})
 		return
 	}
-	permission, err := h.services.RoleList.CreateRoleToPermission(&input)
+	err := h.services.RoleList.CreateRoleToPermission(&input)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
 	}
-	c.JSON(http.StatusCreated, permission)
+	c.AbortWithStatus(http.StatusCreated)
 }
