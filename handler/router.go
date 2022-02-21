@@ -1,10 +1,13 @@
 package handler
 
 import (
+	"github.com/swaggo/files"
+	"github.com/swaggo/gin-swagger"
+
 	"github.com/Baraulia/AUTHENTICATION_SERVICE/pkg/logging"
+	_ "github.com/Baraulia/AUTHORIZATION_SERVICE/docs"
 	"github.com/Baraulia/AUTHORIZATION_SERVICE/service"
 	"github.com/gin-gonic/gin"
-
 )
 
 type Handler struct {
@@ -18,6 +21,7 @@ func NewHandler(services *service.Service, logger logging.Logger) *Handler {
 
 func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.New()
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	router.Use(
 		CorsMiddleware,

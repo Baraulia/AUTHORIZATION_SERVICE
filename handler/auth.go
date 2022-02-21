@@ -15,7 +15,7 @@ import (
 // @ID login
 // @Accept  json
 // @Produce  json
-// @Param input body signInInput true "credentials"
+// @Param input body model.User true "credentials"
 // @Success 200 {string} string "token"
 // @Failure 400,404 {object} errorResponse
 // @Failure 500 {object} errorResponse

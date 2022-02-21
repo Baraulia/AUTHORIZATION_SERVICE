@@ -10,13 +10,13 @@ import (
 
 
 // @Summary Get Role By Id
-// @Security ApiKeyAuth
-// @Tags get roles
+// @Security KeyAuth
+// @Tags Role
 // @Description get role by id
 // @ID get-role-by-id
 // @Accept  json
 // @Produce  json
-// @Success 200 {object}
+// @Success 200 {object} model.Roles
 // @Failure 400,404 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Failure default {object} errorResponse
@@ -38,13 +38,14 @@ func (h *Handler) getRoleById(c *gin.Context) {
 }
 
 // @Summary Create Role
-// @Security ApiKeyAuth
-// @Tags create
+// @Security KeyAuth
+// @Tags Role
 // @Description create role
 // @ID create-role
 // @Accept  json
 // @Produce  json
-// @Success 200 {object}
+// @Param input body model.Role true "role info"
+// @Success 200 {object} model.Role
 // @Failure 400,404 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Failure default {object} errorResponse
@@ -65,13 +66,14 @@ func (h *Handler) createRole(c *gin.Context) {
 }
 
 // @Summary Create Permission
-// @Security ApiKeyAuth
-// @Tags permission
+// @Security KeyAuth
+// @Tags Permission
 // @Description create permission
 // @ID create-permission
 // @Accept  json
 // @Produce  json
-// @Success 200 {object}
+// @Param input body model.Permission true "permission info"
+// @Success 200 {object} model.Permission
 // @Failure 400,404 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Failure default {object} errorResponse
@@ -92,13 +94,14 @@ func (h *Handler) createPermission(c *gin.Context) {
 }
 
 // @Summary Create Role to Permission
-// @Security ApiKeyAuth
-// @Tags permission
+// @Security KeyAuth
+// @Tags Permission
 // @Description create role to permission
 // @ID create-role-to-permission
 // @Accept  json
 // @Produce  json
-// @Success 200 {object}
+// @Param input body model.RoleToPermission true "RTP info"
+// @Success 200 {object} model.RoleToPermission
 // @Failure 400,404 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Failure default {object} errorResponse

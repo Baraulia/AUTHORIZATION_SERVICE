@@ -14,6 +14,13 @@ import (
 	"syscall"
 )
 
+// @title Authorization Service
+// @description Authorization Service for Food Delivery Application
+
+// @securityDefinitions.apikey KeyAuth
+// @in header
+// @name Authorization
+
 func main() {
 	logger := logging.GetLogger()
 	db, err := database.NewPostgresDB(database.PostgresDB{
