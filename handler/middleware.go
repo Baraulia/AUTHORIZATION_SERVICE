@@ -11,42 +11,42 @@ const (
 	userCtx             = "userId"
 )
 
-func (h *Handler) userIdentity(c *gin.Context) {
-	header := c.GetHeader(authorizationHeader)
+func (h *Handler) userIdentity(ctx *gin.Context) {
+	header := ctx.GetHeader(authorizationHeader)
 	if header == "" {
-		newErrorResponse(c, http.StatusUnauthorized, "empty auth header")
+		newErrorResponse(ctx, http.StatusUnauthorized, "empty auth header")
 		return
 	}
 
 	headerParts := strings.Split(header, " ")
 	if len(headerParts) != 2 || headerParts[0] != "Bearer" {
-		newErrorResponse(c, http.StatusUnauthorized, "invalid auth header")
+		newErrorResponse(ctx, http.StatusUnauthorized, "invalid auth header")
 		return
 	}
 
 	if len(headerParts[1]) == 0 {
-		newErrorResponse(c, http.StatusUnauthorized, "token is empty")
+		newErrorResponse(ctx, http.StatusUnauthorized, "token is empty")
 		return
 	}
 
 	userId, err := h.services.Authorization.ParseToken(headerParts[1])
 	if err != nil {
-		newErrorResponse(c, http.StatusUnauthorized, err.Error())
+		newErrorResponse(ctx, http.StatusUnauthorized, err.Error())
 		return
 	}
 
-	c.Set(userCtx, userId)
+	ctx.Set(userCtx, userId)
 }
 
-func CorsMiddleware(c *gin.Context) {
-	c.Header("Access-Control-Allow-Origin", "*")
-	c.Header("Access-Control-Allow-Methods", "*")
-	c.Header("Access-Control-Allow-Headers", "*")
-	c.Header("Content-Type", "application/json")
+func CorsMiddleware(ctx *gin.Context) {
+	ctx.Header("Access-Control-Allow-Origin", "*")
+	ctx.Header("Access-Control-Allow-Methods", "*")
+	ctx.Header("Access-Control-Allow-Headers", "*")
+	ctx.Header("Content-Type", "application/json")
 
-	if c.Request.Method != "OPTIONS" {
-		c.Next()
+	if ctx.Request.Method != "OPTIONS" {
+		ctx.Next()
 	} else {
-		c.AbortWithStatus(http.StatusOK)
+		ctx.AbortWithStatus(http.StatusOK)
 	}
 }

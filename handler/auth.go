@@ -21,21 +21,21 @@ import (
 // @Failure 500 {object} errorResponse
 // @Failure default {object} errorResponse
 // @Router /auth/sign-in [post]
-func (h *Handler) signIn(c *gin.Context) {
+func (h *Handler) signIn(ctx *gin.Context) {
 	var input model.User
 
-	if err := c.BindJSON(&input); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
+	if err := ctx.BindJSON(&input); err != nil {
+		newErrorResponse(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	token, err := h.services.Authorization.GenerateToken(input.Email, input.Password)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, map[string]interface{}{
+	ctx.JSON(http.StatusOK, map[string]interface{}{
 		"token": token,
 	})
 }

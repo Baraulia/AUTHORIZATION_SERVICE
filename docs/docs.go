@@ -99,6 +99,15 @@ const docTemplate_swagger = `{
                 ],
                 "summary": "Get Role By Id",
                 "operationId": "get-role-by-id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Role ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",

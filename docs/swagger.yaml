@@ -97,6 +97,12 @@ paths:
       - application/json
       description: get role by id
       operationId: get-role-by-id
+      parameters:
+      - description: Role ID
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:

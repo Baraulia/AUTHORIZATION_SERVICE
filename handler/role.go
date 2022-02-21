@@ -16,25 +16,26 @@ import (
 // @ID get-role-by-id
 // @Accept  json
 // @Produce  json
+// @Param id path int true "Role ID"
 // @Success 200 {object} model.Roles
 // @Failure 400,404 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Failure default {object} errorResponse
 // @Router /api/roles/:id [get]
-func (h *Handler) getRoleById(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
+func (h *Handler) getRoleById(ctx *gin.Context) {
+	id, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
+		newErrorResponse(ctx, http.StatusBadRequest, "invalid id param")
 		return
 	}
 
 	list, err := h.services.RoleList.GetById(id)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, list)
+	ctx.JSON(http.StatusOK, list)
 }
 
 // @Summary Create Role
@@ -50,19 +51,19 @@ func (h *Handler) getRoleById(c *gin.Context) {
 // @Failure 500 {object} errorResponse
 // @Failure default {object} errorResponse
 // @Router /api/roles/ [post]
-func (h *Handler) createRole(c *gin.Context) {
+func (h *Handler) createRole(ctx *gin.Context) {
 	var input model.Role
-	if err := c.ShouldBindJSON(&input); err != nil {
+	if err := ctx.ShouldBindJSON(&input); err != nil {
 		h.logger.Warnf("Handler createUser (binding JSON):%s", err)
-		c.JSON(http.StatusBadRequest, gin.H{"message": "invalid request"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "invalid request"})
 		return
 	}
 	role, err := h.services.RoleList.CreateRole(&input)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
 	}
-	c.JSON(http.StatusCreated, role)
+	ctx.JSON(http.StatusCreated, role)
 }
 
 // @Summary Create Permission
@@ -78,19 +79,19 @@ func (h *Handler) createRole(c *gin.Context) {
 // @Failure 500 {object} errorResponse
 // @Failure default {object} errorResponse
 // @Router /api/roles/permission [post]
-func (h *Handler) createPermission(c *gin.Context) {
+func (h *Handler) createPermission(ctx *gin.Context) {
 	var input model.Permission
-	if err := c.ShouldBindJSON(&input); err != nil {
+	if err := ctx.ShouldBindJSON(&input); err != nil {
 		h.logger.Warnf("Handler createUser (binding JSON):%s", err)
-		c.JSON(http.StatusBadRequest, gin.H{"message": "invalid request"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "invalid request"})
 		return
 	}
 	permission, err := h.services.RoleList.CreatePermission(&input)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
 	}
-	c.JSON(http.StatusCreated, permission)
+	ctx.JSON(http.StatusCreated, permission)
 }
 
 // @Summary Create Role to Permission
@@ -106,17 +107,17 @@ func (h *Handler) createPermission(c *gin.Context) {
 // @Failure 500 {object} errorResponse
 // @Failure default {object} errorResponse
 // @Router /api/roles/roleToPermission [post]
-func (h *Handler) createRoleToPermission(c *gin.Context) {
+func (h *Handler) createRoleToPermission(ctx *gin.Context) {
 	var input model.RoleToPermission
-	if err := c.ShouldBindJSON(&input); err != nil {
+	if err := ctx.ShouldBindJSON(&input); err != nil {
 		h.logger.Warnf("Handler createUser (binding JSON):%s", err)
-		c.JSON(http.StatusBadRequest, gin.H{"message": "invalid request"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "invalid request"})
 		return
 	}
 	permission, err := h.services.RoleList.CreateRoleToPermission(&input)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
 	}
-	c.JSON(http.StatusCreated, permission)
+	ctx.JSON(http.StatusCreated, permission)
 }
