@@ -5,20 +5,17 @@ option go_package = "GRPC/auth.proto";
 package auth;
 
 service Auth {
-  rpc GetUserWithRights(Request) returns (Response) {}
+  rpc GetUserWithRights(AccessToken) returns (Response) {}
+  rpc BindUserAndRole(User) returns (Resp) {}
   rpc CheckToken(AccessToken) returns (Result) {}
   rpc TokenGenerationByRefresh(RefreshToken) returns (GeneratedTokens) {}
   rpc TokenGenerationById(User) returns (GeneratedTokens) {}
   rpc GetSalt(ReqSalt) returns (Salt) {}
 }
 
-message Request {
-  string accessToken = 1;
-}
-
 message Response {
   int32 userId = 1;
-  string role = 2;
+  int32 role = 2;
   string permissions = 3;
 }
 
@@ -41,7 +38,7 @@ message GeneratedTokens {
 
 message User {
   int32 userId = 1;
-  string role = 2;
+  int32 roleId = 2;
 }
 
 message ReqSalt {
@@ -49,4 +46,7 @@ message ReqSalt {
 
 message Salt {
   string salt = 1;
+}
+
+message Resp {
 }

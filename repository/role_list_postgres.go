@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/Baraulia/AUTHENTICATION_SERVICE/pkg/logging"
 	"github.com/sirupsen/logrus"
+	auth_proto "stlab.itechart-group.com/go/food_delivery/authorization_service/GRPC"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/model"
 )
 
@@ -17,7 +18,7 @@ func NewRoleListPostgres(db *sql.DB, logger logging.Logger) *RoleListPostgres {
 	return &RoleListPostgres{db: db, logger: logger}
 }
 
-func (r *RoleListPostgres) GetById(id int) (*model.Roles, error) {
+func (r *RoleListPostgres) GetRoleById(id int) (*model.Roles, error) {
 	transaction, err := r.db.Begin()
 	if err != nil {
 		logrus.Errorf("GetByID: can not starts transaction:%s", err)
@@ -30,14 +31,14 @@ func (r *RoleListPostgres) GetById(id int) (*model.Roles, error) {
 		logrus.Errorf("GetByID: error while scanning for book:%s", err)
 		return nil, fmt.Errorf("GetByID: repository error:%w", err)
 	}
-	role.Permissions, err = r.SelectPermission(role.ID)
+	role.Permissions, err = r.SelectPermissionByRoleId(role.ID)
 	if err != nil {
 		return nil, fmt.Errorf("error while getting bound roles:%w", err)
 	}
 	return &role, transaction.Commit()
 }
 
-func (r *RoleListPostgres) SelectPermission(id int) ([]model.Permission, error) {
+func (r *RoleListPostgres) SelectPermissionByRoleId(id int) ([]model.Permission, error) {
 	transaction, err := r.db.Begin()
 	if err != nil {
 		logrus.Errorf("ReturnPermission: can not starts transaction:%s", err)
@@ -61,50 +62,64 @@ func (r *RoleListPostgres) SelectPermission(id int) ([]model.Permission, error) 
 	return permissions, transaction.Commit()
 }
 
-func (r *RoleListPostgres) CreateRole(role *model.Role) (*model.Role, error) {
+func (r *RoleListPostgres) CreateRole(role *model.Role) (int, error) {
 	transaction, err := r.db.Begin()
 	if err != nil {
 		r.logger.Errorf("CreateRole: can not starts transaction:%s", err)
-		return nil, fmt.Errorf("createRole: can not starts transaction:%w", err)
+		return 0, fmt.Errorf("createRole: can not starts transaction:%w", err)
 	}
-	var createdRole model.Role
+	var roleId int
 	defer transaction.Rollback()
-	row := transaction.QueryRow("INSERT INTO roles (name) VALUES ($1) RETURNING id, name", role.Name)
-	if err := row.Scan(&createdRole.ID, &createdRole.Name); err != nil {
+	row := transaction.QueryRow("INSERT INTO roles (name) VALUES ($1) RETURNING id", role.Name)
+	if err := row.Scan(&roleId); err != nil {
 		r.logger.Errorf("CreateRole: error while scanning for role:%s", err)
-		return nil, fmt.Errorf("createRole: error while scanning for role:%w", err)
+		return 0, fmt.Errorf("createRole: error while scanning for role:%w", err)
 	}
-	return &createdRole, transaction.Commit()
+	return roleId, transaction.Commit()
 }
 
-func (r *RoleListPostgres) CreatePermission(permission *model.Permission) (*model.Permission, error) {
+func (r *RoleListPostgres) CreatePermission(permission *model.Permission) (int, error) {
 	transaction, err := r.db.Begin()
 	if err != nil {
 		r.logger.Errorf("CreatePermission: can not starts transaction:%s", err)
-		return nil, fmt.Errorf("createPermission: can not starts transaction:%w", err)
+		return 0, fmt.Errorf("createPermission: can not starts transaction:%w", err)
 	}
-	var createdPerm model.Permission
+	var permId int
 	defer transaction.Rollback()
-	row := transaction.QueryRow("INSERT INTO permissions (description) VALUES ($1) RETURNING id, description", permission.Description)
-	if err := row.Scan(&createdPerm.ID, &createdPerm.Description); err != nil {
+	row := transaction.QueryRow("INSERT INTO permissions (description) VALUES ($1) RETURNING id", permission.Description)
+	if err := row.Scan(&permId); err != nil {
 		r.logger.Errorf("CreatePermission: error while scanning for permission:%s", err)
-		return nil, fmt.Errorf("createPermission: error while scanning for permission:%w", err)
+		return 0, fmt.Errorf("createPermission: error while scanning for permission:%w", err)
 	}
-	return &createdPerm, transaction.Commit()
+	return permId, transaction.Commit()
 }
 
-func (r *RoleListPostgres) CreateRoleToPermission(rp *model.RoleToPermission) (*model.RoleToPermission, error) {
+func (r *RoleListPostgres) CreateRoleToPermission(rp *model.RoleToPermission) error {
 	transaction, err := r.db.Begin()
 	if err != nil {
 		r.logger.Errorf("CreateRP: can not starts transaction:%s", err)
-		return nil, fmt.Errorf("createRP: can not starts transaction:%w", err)
+		return fmt.Errorf("createRP: can not starts transaction:%w", err)
 	}
 	var createdRP model.RoleToPermission
 	defer transaction.Rollback()
 	row := transaction.QueryRow("INSERT INTO role_permissions (role_id, permission_id) VALUES ($1, $2) RETURNING role_id, permission_id", rp.RoleId, rp.PermissionId)
 	if err := row.Scan(&createdRP.RoleId, &createdRP.PermissionId); err != nil {
 		r.logger.Errorf("CreateRP: error while scanning for permission:%s", err)
-		return nil, fmt.Errorf("createRP: error while scanning for permission:%w", err)
+		return fmt.Errorf("createRP: error while scanning for permission:%w", err)
 	}
-	return &createdRP, transaction.Commit()
+	return transaction.Commit()
+}
+
+func (r *RoleListPostgres) BindUserWithRole(user *auth_proto.User) error {
+	transaction, err := r.db.Begin()
+	if err != nil {
+		r.logger.Errorf("CreateRP: can not starts transaction:%s", err)
+		return fmt.Errorf("createRP: can not starts transaction:%w", err)
+	}
+	_, err = transaction.Exec("INSERT into user_role (role_id, user_id) values ($1, $2)", user.RoleId, user.UserId)
+	if err != nil {
+		r.logger.Errorf("BindUserWithRole:%s", err)
+		return fmt.Errorf("BindUserWithRole:%w", err)
+	}
+	return transaction.Commit()
 }

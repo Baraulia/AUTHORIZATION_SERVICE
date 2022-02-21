@@ -43,7 +43,7 @@ func main() {
 	}()
 
 	go func() {
-		grpcServer.NewGRPCServer()
+		grpcServer.NewGRPCServer(ser)
 	}()
 
 	quit := make(chan os.Signal, 1)

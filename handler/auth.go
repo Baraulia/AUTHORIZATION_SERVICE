@@ -1,10 +1,9 @@
 package handler
 
 import (
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/model"
-
-	"github.com/gin-gonic/gin"
 )
 
 // @Summary SignIn
