@@ -2,18 +2,20 @@ package main
 
 import (
 	"context"
-	"github.com/Baraulia/AUTHENTICATION_SERVICE/pkg/logging"
 	"os"
 	"os/signal"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/GRPC/grpcServer"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/handler"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/pkg/database"
+	"stlab.itechart-group.com/go/food_delivery/authorization_service/pkg/logging"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/repository"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/server"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/service"
 	"syscall"
 )
 
+// @title Authorization Service
+// @description Authorization Service for Food Delivery Application
 func main() {
 	logger := logging.GetLogger()
 	db, err := database.NewPostgresDB(database.PostgresDB{
