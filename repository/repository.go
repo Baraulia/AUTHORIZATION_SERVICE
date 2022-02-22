@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	auth_proto "stlab.itechart-group.com/go/food_delivery/authorization_service/GRPC"
+	_ "stlab.itechart-group.com/go/food_delivery/authorization_service/docs"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/model"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/pkg/logging"
 )
