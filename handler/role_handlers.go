@@ -102,7 +102,7 @@ func (h *Handler) getAllRoles(ctx *gin.Context) {
 }
 
 // @Summary getPermsByRoleId
-// @Tags permission
+// @Tags roles
 // @Description get permissions bound with role
 // @Accept  json
 // @Produce  json
