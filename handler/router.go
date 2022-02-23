@@ -25,14 +25,14 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	role := router.Group("/roles")
 	{
 		role.POST("/", h.createRole)
-		role.POST("/roleToPerms", h.bindRoleWithPerms)
 		role.GET("/:id", h.getRoleById)
 		role.GET("/", h.getAllRoles)
+		role.GET("/:id/perms", h.getPermsByRoleId)
+		role.POST("/:id/perms", h.bindRoleWithPerms)
 	}
 	perm := router.Group("/perms")
 	{
 		perm.POST("/", h.createPerm)
-		perm.GET("/:id", h.getPermsByRoleId)
 		perm.GET("/", h.getAllPerms)
 	}
 

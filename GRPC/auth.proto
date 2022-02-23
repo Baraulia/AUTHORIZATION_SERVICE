@@ -1,12 +1,12 @@
 syntax = "proto3";
 
-option go_package = "GRPC/auth.proto";
+option go_package = "GRPC/authProto";
 
 package auth;
 
 service Auth {
   rpc GetUserWithRights(AccessToken) returns (Response) {}
-  rpc BindUserAndRole(User) returns (Resp) {}
+  rpc BindUserAndRole(User) returns (ResultBinding) {}
   rpc CheckToken(AccessToken) returns (Result) {}
   rpc TokenGenerationByRefresh(RefreshToken) returns (GeneratedTokens) {}
   rpc TokenGenerationById(User) returns (GeneratedTokens) {}
@@ -48,5 +48,5 @@ message Salt {
   string salt = 1;
 }
 
-message Resp {
+message ResultBinding {
 }

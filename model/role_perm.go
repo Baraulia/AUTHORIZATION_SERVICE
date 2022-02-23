@@ -41,3 +41,7 @@ type ListRoles struct {
 type ListPerms struct {
 	Perms []Permission
 }
+
+type ErrorResponse struct {
+	Message string `json:"message"`
+}

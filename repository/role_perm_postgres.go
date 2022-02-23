@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	auth_proto "stlab.itechart-group.com/go/food_delivery/authorization_service/GRPC"
+	authProto "stlab.itechart-group.com/go/food_delivery/authorization_service/GRPC"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/model"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/pkg/logging"
 )
@@ -19,30 +19,20 @@ func NewRolePermPostgres(db *sql.DB, logger logging.Logger) *RolePermPostgres {
 }
 
 func (r *RolePermPostgres) GetRoleById(id int) (*model.Role, error) {
-	transaction, err := r.db.Begin()
-	if err != nil {
-		logrus.Errorf("GetRoleById: can not starts transaction:%s", err)
-		return nil, fmt.Errorf("GetRoleById: can not starts transaction:%w", err)
-	}
 	var role model.Role
 	query := "SELECT id, name FROM roles WHERE id = $1"
-	row := transaction.QueryRow(query, id)
+	row := r.db.QueryRow(query, id)
 	if err := row.Scan(&role.ID, &role.Name); err != nil {
 		logrus.Errorf("GetRoleById: error while scanning for role:%s", err)
 		return nil, fmt.Errorf("GetRoleById: repository error:%w", err)
 	}
-	return &role, transaction.Commit()
+	return &role, nil
 }
 
 func (r *RolePermPostgres) GetAllRoles() ([]model.Role, error) {
-	transaction, err := r.db.Begin()
-	if err != nil {
-		logrus.Errorf("GetAllRoles: can not starts transaction:%s", err)
-		return nil, fmt.Errorf("GetAllRoles: can not starts transaction:%w", err)
-	}
 	var roles []model.Role
 	query := "SELECT id, name FROM roles"
-	rows, err := transaction.Query(query)
+	rows, err := r.db.Query(query)
 	if err != nil {
 		logrus.Errorf("GetAllRoles: can not executes a query:%s", err)
 		return nil, fmt.Errorf("GetAllRoles: repository error:%w", err)
@@ -55,23 +45,17 @@ func (r *RolePermPostgres) GetAllRoles() ([]model.Role, error) {
 		}
 		roles = append(roles, role)
 	}
-	return roles, transaction.Commit()
+	return roles, nil
 }
 
 func (r *RolePermPostgres) CreateRole(role string) (int, error) {
-	transaction, err := r.db.Begin()
-	if err != nil {
-		r.logger.Errorf("CreateRole: can not starts transaction:%s", err)
-		return 0, fmt.Errorf("createRole: can not starts transaction:%w", err)
-	}
 	var roleId int
-	defer transaction.Rollback()
-	row := transaction.QueryRow("INSERT INTO roles (name) VALUES ($1) RETURNING id", role)
+	row := r.db.QueryRow("INSERT INTO roles (name) VALUES ($1) RETURNING id", role)
 	if err := row.Scan(&roleId); err != nil {
 		r.logger.Errorf("CreateRole: error while scanning for roleId:%s", err)
 		return 0, fmt.Errorf("createRole: error while scanning for roleId:%w", err)
 	}
-	return roleId, transaction.Commit()
+	return roleId, nil
 }
 
 func (r *RolePermPostgres) BindRoleWithPerms(rp *model.BindRoleWithPermission) error {
@@ -93,14 +77,9 @@ func (r *RolePermPostgres) BindRoleWithPerms(rp *model.BindRoleWithPermission) e
 }
 
 func (r *RolePermPostgres) GetPermsByRoleId(id int) ([]model.Permission, error) {
-	transaction, err := r.db.Begin()
-	if err != nil {
-		logrus.Errorf("GetPermsByRoleId: can not starts transaction:%s", err)
-		return nil, fmt.Errorf("GetPermsByRoleId: can not starts transaction:%s", err)
-	}
 	var permissions []model.Permission
-	query := "SELECT id, description FROM permissions JOIN role_permissions ON permissions.id = role_permissions.permission_id AND role_permissions.role_id = $1"
-	rows, err := transaction.Query(query, id)
+	query := "SELECT permissions.id, permissions.description FROM permissions JOIN role_permissions ON permissions.id = role_permissions.permission_id AND role_permissions.role_id = $1"
+	rows, err := r.db.Query(query, id)
 	if err != nil {
 		logrus.Errorf("GetPermsByRoleId: can not executes a query:%s", err)
 		return nil, fmt.Errorf("GetPermsByRoleId: repository error:%w", err)
@@ -113,34 +92,23 @@ func (r *RolePermPostgres) GetPermsByRoleId(id int) ([]model.Permission, error) 
 		}
 		permissions = append(permissions, permission)
 	}
-	return permissions, transaction.Commit()
+	return permissions, nil
 }
 
 func (r *RolePermPostgres) CreatePermission(permission string) (int, error) {
-	transaction, err := r.db.Begin()
-	if err != nil {
-		r.logger.Errorf("CreatePermission: can not starts transaction:%s", err)
-		return 0, fmt.Errorf("createPermission: can not starts transaction:%w", err)
-	}
 	var permId int
-	defer transaction.Rollback()
-	row := transaction.QueryRow("INSERT INTO permissions (description) VALUES ($1) RETURNING id", permission)
+	row := r.db.QueryRow("INSERT INTO permissions (description) VALUES ($1) RETURNING id", permission)
 	if err := row.Scan(&permId); err != nil {
 		r.logger.Errorf("CreatePermission: error while scanning for permission:%s", err)
 		return 0, fmt.Errorf("createPermission: error while scanning for permission:%w", err)
 	}
-	return permId, transaction.Commit()
+	return permId, nil
 }
 
 func (r *RolePermPostgres) GetAllPerms() ([]model.Permission, error) {
-	transaction, err := r.db.Begin()
-	if err != nil {
-		logrus.Errorf("GetAllPerms: can not starts transaction:%s", err)
-		return nil, fmt.Errorf("GetAllPerms: can not starts transaction:%s", err)
-	}
 	var permissions []model.Permission
 	query := "SELECT id, description FROM permissions"
-	rows, err := transaction.Query(query)
+	rows, err := r.db.Query(query)
 	if err != nil {
 		logrus.Errorf("GetAllPerms: can not executes a query:%s", err)
 		return nil, fmt.Errorf("GetAllPerms: repository error:%w", err)
@@ -153,19 +121,14 @@ func (r *RolePermPostgres) GetAllPerms() ([]model.Permission, error) {
 		}
 		permissions = append(permissions, permission)
 	}
-	return permissions, transaction.Commit()
+	return permissions, nil
 }
 
-func (r *RolePermPostgres) BindUserWithRole(user *auth_proto.User) error {
-	transaction, err := r.db.Begin()
-	if err != nil {
-		r.logger.Errorf("CreateRP: can not starts transaction:%s", err)
-		return fmt.Errorf("createRP: can not starts transaction:%w", err)
-	}
-	_, err = transaction.Exec("INSERT into user_role (role_id, user_id) values ($1, $2)", user.RoleId, user.UserId)
+func (r *RolePermPostgres) AddRoleToUser(user *authProto.User) error {
+	_, err := r.db.Exec("INSERT into user_role (role_id, user_id) values ($1, $2)", user.RoleId, user.UserId)
 	if err != nil {
 		r.logger.Errorf("BindUserWithRole:%s", err)
 		return fmt.Errorf("BindUserWithRole:%w", err)
 	}
-	return transaction.Commit()
+	return nil
 }

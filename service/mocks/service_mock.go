@@ -5,9 +5,10 @@
 package mock_service
 
 import (
-	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
-	GRPC "stlab.itechart-group.com/go/food_delivery/authorization_service/GRPC"
+
+	gomock "github.com/golang/mock/gomock"
+	authProto "stlab.itechart-group.com/go/food_delivery/authorization_service/GRPC"
 	model "stlab.itechart-group.com/go/food_delivery/authorization_service/model"
 )
 
@@ -34,6 +35,20 @@ func (m *MockRolePerm) EXPECT() *MockRolePermMockRecorder {
 	return m.recorder
 }
 
+// AddRoleToUser mocks base method.
+func (m *MockRolePerm) AddRoleToUser(user *authProto.User) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddRoleToUser", user)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// AddRoleToUser indicates an expected call of AddRoleToUser.
+func (mr *MockRolePermMockRecorder) AddRoleToUser(user interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddRoleToUser", reflect.TypeOf((*MockRolePerm)(nil).AddRoleToUser), user)
+}
+
 // BindRoleWithPerms mocks base method.
 func (m *MockRolePerm) BindRoleWithPerms(rp *model.BindRoleWithPermission) error {
 	m.ctrl.T.Helper()
@@ -46,20 +61,6 @@ func (m *MockRolePerm) BindRoleWithPerms(rp *model.BindRoleWithPermission) error
 func (mr *MockRolePermMockRecorder) BindRoleWithPerms(rp interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BindRoleWithPerms", reflect.TypeOf((*MockRolePerm)(nil).BindRoleWithPerms), rp)
-}
-
-// BindUserWithRole mocks base method.
-func (m *MockRolePerm) BindUserWithRole(user *GRPC.User) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "BindUserWithRole", user)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// BindUserWithRole indicates an expected call of BindUserWithRole.
-func (mr *MockRolePermMockRecorder) BindUserWithRole(user interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BindUserWithRole", reflect.TypeOf((*MockRolePerm)(nil).BindUserWithRole), user)
 }
 
 // CreatePermission mocks base method.

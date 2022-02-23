@@ -21,8 +21,8 @@ func TestHandler_getRoleById(t *testing.T) {
 		input               string
 		id                  int
 		mockBehavior        mockBehavior
-		expectedStatusCode  int    //expected code
-		expectedRequestBody string //expected response
+		expectedStatusCode  int
+		expectedRequestBody string
 	}{
 		{
 			name:  "OK",
@@ -42,7 +42,7 @@ func TestHandler_getRoleById(t *testing.T) {
 			input:               "a",
 			mockBehavior:        func(s *mock_service.MockRolePerm, id int) {},
 			expectedStatusCode:  400,
-			expectedRequestBody: `{"message":"Invalid request"}`,
+			expectedRequestBody: `{"message":"invalid request"}`,
 		},
 		{
 			name:  "non-existent id",
@@ -92,8 +92,8 @@ func TestHandler_getAllRoles(t *testing.T) {
 	testTable := []struct {
 		name                string
 		mockBehavior        mockBehavior
-		expectedStatusCode  int    //expected code
-		expectedRequestBody string //expected response
+		expectedStatusCode  int
+		expectedRequestBody string
 	}{
 		{
 			name: "OK",
@@ -160,8 +160,8 @@ func TestHandler_createRole(t *testing.T) {
 		inputBody           string
 		inputRole           *model.CreateRole
 		mockBehavior        mockBehavior
-		expectedStatusCode  int    //expected code
-		expectedRequestBody string //expected response
+		expectedStatusCode  int
+		expectedRequestBody string
 	}{
 		{
 			name:      "OK",
@@ -220,10 +220,11 @@ func TestHandler_bindRoleWithPerms(t *testing.T) {
 
 	testTable := []struct {
 		name               string
+		inputRoleId        string
 		inputBody          string
 		input              *model.BindRoleWithPermission
 		mockBehavior       mockBehavior
-		expectedStatusCode int //expected code
+		expectedStatusCode int
 	}{
 		{
 			name:      "OK",
@@ -232,6 +233,7 @@ func TestHandler_bindRoleWithPerms(t *testing.T) {
 				RoleId:        1,
 				PermissionsId: []int{1, 2, 3},
 			},
+			inputRoleId: "1",
 			mockBehavior: func(s *mock_service.MockRolePerm, input *model.BindRoleWithPermission) {
 				s.EXPECT().BindRoleWithPerms(input).Return(nil)
 			},
@@ -274,7 +276,7 @@ func TestHandler_bindRoleWithPerms(t *testing.T) {
 			//Test request
 			w := httptest.NewRecorder()
 
-			req := httptest.NewRequest("POST", "/roles/roleToPerms", bytes.NewBufferString(testCase.inputBody))
+			req := httptest.NewRequest("POST", fmt.Sprintf("/roles/%s/perms", testCase.inputRoleId), bytes.NewBufferString(testCase.inputBody))
 
 			//Execute the request
 			r.ServeHTTP(w, req)

@@ -2,7 +2,7 @@ package repository
 
 import (
 	"database/sql"
-	auth_proto "stlab.itechart-group.com/go/food_delivery/authorization_service/GRPC"
+	authProto "stlab.itechart-group.com/go/food_delivery/authorization_service/GRPC"
 	_ "stlab.itechart-group.com/go/food_delivery/authorization_service/docs"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/model"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/pkg/logging"
@@ -20,7 +20,7 @@ type RolePerm interface {
 	CreatePermission(permission string) (int, error)
 	GetAllPerms() ([]model.Permission, error)
 
-	BindUserWithRole(user *auth_proto.User) error
+	AddRoleToUser(user *authProto.User) error
 }
 
 type Repository struct {

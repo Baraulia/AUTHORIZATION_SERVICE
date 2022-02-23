@@ -21,8 +21,8 @@ func TestHandler_getPermsByRoleId(t *testing.T) {
 		input               string
 		id                  int
 		mockBehavior        mockBehavior
-		expectedStatusCode  int    //expected code
-		expectedRequestBody string //expected response
+		expectedStatusCode  int
+		expectedRequestBody string
 	}{
 		{
 			name:  "OK",
@@ -44,11 +44,13 @@ func TestHandler_getPermsByRoleId(t *testing.T) {
 			expectedRequestBody: `{"Perms":[{"id":1,"name":"test"},{"id":2,"name":"test2"}]}`,
 		},
 		{
-			name:                "invalid request",
-			input:               "a",
-			mockBehavior:        func(s *mock_service.MockRolePerm, id int) {},
+			name:         "invalid request",
+			input:        "a",
+			id:           1,
+			mockBehavior: func(s *mock_service.MockRolePerm, id int) {},
+
 			expectedStatusCode:  400,
-			expectedRequestBody: `{"message":"Invalid request"}`,
+			expectedRequestBody: `{"message":"invalid request"}`,
 		},
 		{
 			name:  "server error",
@@ -79,7 +81,7 @@ func TestHandler_getPermsByRoleId(t *testing.T) {
 			//Test request
 			w := httptest.NewRecorder()
 
-			req := httptest.NewRequest("GET", fmt.Sprintf("/perms/%s", testCase.input), nil)
+			req := httptest.NewRequest("GET", fmt.Sprintf("/roles/%s/perms", testCase.input), nil)
 
 			//Execute the request
 			r.ServeHTTP(w, req)
@@ -98,8 +100,8 @@ func TestHandler_getAllPerms(t *testing.T) {
 	testTable := []struct {
 		name                string
 		mockBehavior        mockBehavior
-		expectedStatusCode  int    //expected code
-		expectedRequestBody string //expected response
+		expectedStatusCode  int
+		expectedRequestBody string
 	}{
 		{
 			name: "OK",
@@ -183,8 +185,8 @@ func TestHandler_createPerm(t *testing.T) {
 		inputBody           string
 		inputPerm           *model.CreatePerm
 		mockBehavior        mockBehavior
-		expectedStatusCode  int    //expected code
-		expectedRequestBody string //expected response
+		expectedStatusCode  int
+		expectedRequestBody string
 	}{
 		{
 			name:      "OK",
