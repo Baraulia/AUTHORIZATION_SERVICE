@@ -18,6 +18,11 @@ definitions:
       name:
         type: string
     type: object
+  model.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
   model.ListPerms:
     properties:
       perms:
@@ -63,14 +68,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/model.ListPerms'
-        "400":
-          description: Bad Request
-          schema:
-            type: string
         "500":
           description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/model.ErrorResponse'
       summary: getAllPerms
       tags:
       - permission
@@ -91,46 +92,18 @@ paths:
         "201":
           description: Created
           schema:
-            type: string
+            additionalProperties:
+              type: integer
+            type: object
         "400":
           description: Bad Request
           schema:
-            type: string
+            $ref: '#/definitions/model.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/model.ErrorResponse'
       summary: createPerm
-      tags:
-      - permission
-  /perms/{id}:
-    get:
-      consumes:
-      - application/json
-      description: get permissions bound with role
-      parameters:
-      - description: Role ID
-        format: int64
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.ListPerms'
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: getPermsByRoleId
       tags:
       - permission
   /roles/:
@@ -145,14 +118,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/model.ListRoles'
-        "400":
-          description: Bad Request
-          schema:
-            type: string
         "500":
           description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/model.ErrorResponse'
       summary: getAllRoles
       tags:
       - roles
@@ -173,15 +142,17 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            additionalProperties:
+              type: integer
+            type: object
         "400":
           description: Bad Request
           schema:
-            type: string
+            $ref: '#/definitions/model.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/model.ErrorResponse'
       summary: createRole
       tags:
       - roles
@@ -206,15 +177,44 @@ paths:
         "400":
           description: Bad Request
           schema:
-            type: string
+            $ref: '#/definitions/model.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/model.ErrorResponse'
       summary: getRoleById
       tags:
       - roles
-  /roles/roleToPerms:
+  /roles/{id}/perms:
+    get:
+      consumes:
+      - application/json
+      description: get permissions bound with role
+      parameters:
+      - description: Role ID
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ListPerms'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: getPermsByRoleId
+      tags:
+      - roles
     post:
       consumes:
       - application/json
@@ -234,11 +234,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            type: string
+            $ref: '#/definitions/model.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/model.ErrorResponse'
       summary: bindRoleWithPerms
       tags:
       - roles
