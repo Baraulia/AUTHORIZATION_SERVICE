@@ -2,18 +2,20 @@ package main
 
 import (
 	"context"
-	"github.com/Baraulia/AUTHENTICATION_SERVICE/pkg/logging"
-	"github.com/Baraulia/AUTHORIZATION_SERVICE/GRPC/grpcServer"
-	"github.com/Baraulia/AUTHORIZATION_SERVICE/handler"
-	"github.com/Baraulia/AUTHORIZATION_SERVICE/pkg/database"
-	"github.com/Baraulia/AUTHORIZATION_SERVICE/repository"
-	"github.com/Baraulia/AUTHORIZATION_SERVICE/server"
-	"github.com/Baraulia/AUTHORIZATION_SERVICE/service"
 	"os"
 	"os/signal"
+	"stlab.itechart-group.com/go/food_delivery/authorization_service/GRPC/grpcServer"
+	"stlab.itechart-group.com/go/food_delivery/authorization_service/handler"
+	"stlab.itechart-group.com/go/food_delivery/authorization_service/pkg/database"
+	"stlab.itechart-group.com/go/food_delivery/authorization_service/pkg/logging"
+	"stlab.itechart-group.com/go/food_delivery/authorization_service/repository"
+	"stlab.itechart-group.com/go/food_delivery/authorization_service/server"
+	"stlab.itechart-group.com/go/food_delivery/authorization_service/service"
 	"syscall"
 )
 
+// @title Authorization Service
+// @description Authorization Service for Food Delivery Application
 func main() {
 	logger := logging.GetLogger()
 	db, err := database.NewPostgresDB(database.PostgresDB{
@@ -43,7 +45,7 @@ func main() {
 	}()
 
 	go func() {
-		grpcServer.NewGRPCServer()
+		grpcServer.NewGRPCServer(ser)
 	}()
 
 	quit := make(chan os.Signal, 1)

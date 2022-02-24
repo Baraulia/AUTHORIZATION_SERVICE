@@ -2,21 +2,26 @@ package grpcServer
 
 import (
 	"context"
-	auth_proto "github.com/Baraulia/AUTHORIZATION_SERVICE/GRPC"
-	"github.com/Baraulia/AUTHORIZATION_SERVICE/pkg/logging"
+	"fmt"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"net"
+	authProto "stlab.itechart-group.com/go/food_delivery/authorization_service/GRPC"
+	"stlab.itechart-group.com/go/food_delivery/authorization_service/pkg/logging"
+	"stlab.itechart-group.com/go/food_delivery/authorization_service/service"
 )
 
 var logger = logging.GetLogger()
 
-type GRPCServer struct{}
+type GRPCServer struct {
+	service *service.Service
+	authProto.UnimplementedAuthServer
+}
 
-func NewGRPCServer() {
+func NewGRPCServer(service *service.Service) {
 	s := grpc.NewServer()
-	str := &GRPCServer{}
-	auth_proto.RegisterAuthServer(s, str)
+	str := &GRPCServer{service: service}
+	authProto.RegisterAuthServer(s, str)
 	lis, err := net.Listen("tcp", ":8090")
 	if err != nil {
 		logger.Fatalf("NewGRPCServer, Listen:%s", err)
@@ -27,26 +32,47 @@ func NewGRPCServer() {
 	}
 
 }
-func (g *GRPCServer) GetUserWithRights(ctx context.Context, request *auth_proto.Request) (*auth_proto.Response, error) {
+func (g *GRPCServer) GetUserWithRights(ctx context.Context, request *authProto.AccessToken) (*authProto.Response, error) {
 
-	return &auth_proto.Response{
+	return &authProto.Response{
 		UserId:      1,
-		Role:        "Super",
+		Role:        1,
 		Permissions: request.AccessToken,
 	}, nil
 }
-func (g *GRPCServer) CheckToken(context.Context, *auth_proto.AccessToken) (*auth_proto.Result, error) {
-	return nil, nil
+func (g *GRPCServer) CheckToken(context.Context, *authProto.AccessToken) (*authProto.Result, error) {
+	return &authProto.Result{
+		Result: true,
+	}, nil
 }
-func (g *GRPCServer) TokenGenerationByRefresh(context.Context, *auth_proto.RefreshToken) (*auth_proto.GeneratedTokens, error) {
-	return nil, nil
+func (g *GRPCServer) BindUserAndRole(ctx context.Context, user *authProto.User) (*authProto.ResultBinding, error) {
+	return &authProto.ResultBinding{}, g.service.AddRoleToUser(user)
 }
-func (g *GRPCServer) TokenGenerationById(context.Context, *auth_proto.User) (*auth_proto.GeneratedTokens, error) {
-	return nil, nil
-}
-func (g *GRPCServer) GetSalt(context.Context, *auth_proto.ReqSalt) (*auth_proto.Salt, error) {
-	return nil, nil
-}
-func (g *GRPCServer) MustEmbedUnimplementedAuthServer() {
 
+func (g *GRPCServer) TokenGenerationByRefresh(context.Context, *authProto.RefreshToken) (*authProto.GeneratedTokens, error) {
+	return nil, nil
+}
+func (g *GRPCServer) TokenGenerationById(ctx context.Context, user *authProto.User) (*authProto.GeneratedTokens, error) {
+	if user.RoleId == 0 {
+		role, err := g.service.GetRoleById(int(user.UserId))
+		if err != nil {
+			logger.Errorf("GetRoleById:%s", err)
+			return nil, fmt.Errorf("GetRoleById:%w", err)
+		}
+		user.RoleId = int32(role.ID)
+	} else {
+		err := g.service.AddRoleToUser(user)
+		if err != nil {
+			logger.Errorf("BindUserWithRole:%s", err)
+			return nil, fmt.Errorf("BindUserWithRole:%w", err)
+		}
+	}
+	return &authProto.GeneratedTokens{
+		AccessToken:  fmt.Sprintf("UserId:%d, RoleId:%d", user.UserId, user.RoleId),
+		RefreshToken: "Refresh Token",
+	}, nil
+}
+
+func (g *GRPCServer) GetSalt(context.Context, *authProto.ReqSalt) (*authProto.Salt, error) {
+	return nil, nil
 }

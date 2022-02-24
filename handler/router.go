@@ -1,15 +1,17 @@
 package handler
 
 import (
-	"github.com/Baraulia/AUTHENTICATION_SERVICE/pkg/logging"
-	"github.com/Baraulia/AUTHORIZATION_SERVICE/service"
 	"github.com/gin-gonic/gin"
-
+	"github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	_ "stlab.itechart-group.com/go/food_delivery/authorization_service/docs"
+	"stlab.itechart-group.com/go/food_delivery/authorization_service/pkg/logging"
+	"stlab.itechart-group.com/go/food_delivery/authorization_service/service"
 )
 
 type Handler struct {
 	services *service.Service
-	logger  logging.Logger
+	logger   logging.Logger
 }
 
 func NewHandler(services *service.Service, logger logging.Logger) *Handler {
@@ -18,25 +20,20 @@ func NewHandler(services *service.Service, logger logging.Logger) *Handler {
 
 func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.New()
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	router.Use(
-		CorsMiddleware,
-	)
-
-	auth := router.Group("/auth")
+	role := router.Group("/roles")
 	{
-		auth.POST("/sign-in", h.signIn)
+		role.POST("/", h.createRole)
+		role.GET("/:id", h.getRoleById)
+		role.GET("/", h.getAllRoles)
+		role.GET("/:id/perms", h.getPermsByRoleId)
+		role.POST("/:id/perms", h.bindRoleWithPerms)
 	}
-
-	api := router.Group("/api", h.userIdentity)
+	perm := router.Group("/perms")
 	{
-		lists := api.Group("/roles")
-		{
-			lists.POST("/", h.createRole)
-			lists.POST("/permission", h.createPermission)
-			lists.POST("/roleToPermission", h.createRoleToPermission)
-			lists.GET("/:id", h.getRoleById)
-		}
+		perm.POST("/", h.createPerm)
+		perm.GET("/", h.getAllPerms)
 	}
 
 	return router
