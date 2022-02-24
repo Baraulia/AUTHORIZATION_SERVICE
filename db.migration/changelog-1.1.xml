@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
 
-    <changeSet id="5" author="T5">
+    <changeSet id="22.02.2022 15:30" author="Tony Sinero">
        <sql>
            INSERT INTO roles (id, name) VALUES (1,'Authorized Customer'),
            (2,'Unauthorized Customer'),
