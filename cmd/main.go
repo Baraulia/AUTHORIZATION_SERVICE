@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/signal"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/GRPC/grpcServer"
+	"stlab.itechart-group.com/go/food_delivery/authorization_service/auth"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/handler"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/pkg/database"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/pkg/logging"
@@ -36,6 +37,8 @@ func main() {
 
 	port := os.Getenv("API_SERVER_PORT")
 	serv := new(server.Server)
+
+	auth.GenerateSecret()
 
 	go func() {
 		err := serv.Run(port, handlers.InitRoutes())
