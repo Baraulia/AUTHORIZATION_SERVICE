@@ -38,7 +38,7 @@ func main() {
 	port := os.Getenv("API_SERVER_PORT")
 	serv := new(server.Server)
 
-	auth.GenerateSecret()
+	auth.Secret = os.Getenv("JWT_SECRET")
 
 	go func() {
 		err := serv.Run(port, handlers.InitRoutes())
