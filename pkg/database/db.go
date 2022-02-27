@@ -3,8 +3,8 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"github.com/Baraulia/AUTHENTICATION_SERVICE/pkg/logging"
 	_ "github.com/lib/pq"
+	"stlab.itechart-group.com/go/food_delivery/authorization_service/pkg/logging"
 )
 
 type PostgresDB struct {
@@ -77,6 +77,6 @@ const USER_ROLE_SCHEMA = `
 		CREATE TABLE IF NOT EXISTS user_role (
 		role_id int DEFAULT 1 references roles(id) on delete SET DEFAULT,
 		user_id int,
-		CONSTRAINT role_user_pkey PRIMARY KEY(role_id, user_id)		
+		CONSTRAINT role_user_pkey PRIMARY KEY(role_id, user_id)
 );
 `

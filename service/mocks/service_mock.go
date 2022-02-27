@@ -7,111 +7,148 @@ package mock_service
 import (
 	reflect "reflect"
 
-	model "github.com/Baraulia/AUTHORIZATION_SERVICE/model"
 	gomock "github.com/golang/mock/gomock"
+	authProto "stlab.itechart-group.com/go/food_delivery/authorization_service/GRPC"
+	model "stlab.itechart-group.com/go/food_delivery/authorization_service/model"
 )
 
-// MockAuthorization is a mock of Authorization interface.
-type MockAuthorization struct {
+// MockRolePerm is a mock of RolePerm interface.
+type MockRolePerm struct {
 	ctrl     *gomock.Controller
-	recorder *MockAuthorizationMockRecorder
+	recorder *MockRolePermMockRecorder
 }
 
-// MockAuthorizationMockRecorder is the mock recorder for MockAuthorization.
-type MockAuthorizationMockRecorder struct {
-	mock *MockAuthorization
+// MockRolePermMockRecorder is the mock recorder for MockRolePerm.
+type MockRolePermMockRecorder struct {
+	mock *MockRolePerm
 }
 
-// NewMockAuthorization creates a new mock instance.
-func NewMockAuthorization(ctrl *gomock.Controller) *MockAuthorization {
-	mock := &MockAuthorization{ctrl: ctrl}
-	mock.recorder = &MockAuthorizationMockRecorder{mock}
+// NewMockRolePerm creates a new mock instance.
+func NewMockRolePerm(ctrl *gomock.Controller) *MockRolePerm {
+	mock := &MockRolePerm{ctrl: ctrl}
+	mock.recorder = &MockRolePermMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockAuthorization) EXPECT() *MockAuthorizationMockRecorder {
+func (m *MockRolePerm) EXPECT() *MockRolePermMockRecorder {
 	return m.recorder
 }
 
-// GenerateToken mocks base method.
-func (m *MockAuthorization) GenerateToken(email, password string) (string, error) {
+// AddRoleToUser mocks base method.
+func (m *MockRolePerm) AddRoleToUser(user *authProto.User) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GenerateToken", email, password)
-	ret0, _ := ret[0].(string)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret := m.ctrl.Call(m, "AddRoleToUser", user)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-// GenerateToken indicates an expected call of GenerateToken.
-func (mr *MockAuthorizationMockRecorder) GenerateToken(email, password interface{}) *gomock.Call {
+// AddRoleToUser indicates an expected call of AddRoleToUser.
+func (mr *MockRolePermMockRecorder) AddRoleToUser(user interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateToken", reflect.TypeOf((*MockAuthorization)(nil).GenerateToken), email, password)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddRoleToUser", reflect.TypeOf((*MockRolePerm)(nil).AddRoleToUser), user)
 }
 
-// ParseToken mocks base method.
-func (m *MockAuthorization) ParseToken(token string) (int, error) {
+// BindRoleWithPerms mocks base method.
+func (m *MockRolePerm) BindRoleWithPerms(rp *model.BindRoleWithPermission) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ParseToken", token)
+	ret := m.ctrl.Call(m, "BindRoleWithPerms", rp)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// BindRoleWithPerms indicates an expected call of BindRoleWithPerms.
+func (mr *MockRolePermMockRecorder) BindRoleWithPerms(rp interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BindRoleWithPerms", reflect.TypeOf((*MockRolePerm)(nil).BindRoleWithPerms), rp)
+}
+
+// CreatePermission mocks base method.
+func (m *MockRolePerm) CreatePermission(permission string) (int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreatePermission", permission)
 	ret0, _ := ret[0].(int)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// ParseToken indicates an expected call of ParseToken.
-func (mr *MockAuthorizationMockRecorder) ParseToken(token interface{}) *gomock.Call {
+// CreatePermission indicates an expected call of CreatePermission.
+func (mr *MockRolePermMockRecorder) CreatePermission(permission interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ParseToken", reflect.TypeOf((*MockAuthorization)(nil).ParseToken), token)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePermission", reflect.TypeOf((*MockRolePerm)(nil).CreatePermission), permission)
 }
 
-// MockRoleList is a mock of RoleList interface.
-type MockRoleList struct {
-	ctrl     *gomock.Controller
-	recorder *MockRoleListMockRecorder
-}
-
-// MockRoleListMockRecorder is the mock recorder for MockRoleList.
-type MockRoleListMockRecorder struct {
-	mock *MockRoleList
-}
-
-// NewMockRoleList creates a new mock instance.
-func NewMockRoleList(ctrl *gomock.Controller) *MockRoleList {
-	mock := &MockRoleList{ctrl: ctrl}
-	mock.recorder = &MockRoleListMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockRoleList) EXPECT() *MockRoleListMockRecorder {
-	return m.recorder
-}
-
-// GetById mocks base method.
-func (m *MockRoleList) GetById(id int) (*model.Role, error) {
+// CreateRole mocks base method.
+func (m *MockRolePerm) CreateRole(role string) (int, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetById", id)
+	ret := m.ctrl.Call(m, "CreateRole", role)
+	ret0, _ := ret[0].(int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateRole indicates an expected call of CreateRole.
+func (mr *MockRolePermMockRecorder) CreateRole(role interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateRole", reflect.TypeOf((*MockRolePerm)(nil).CreateRole), role)
+}
+
+// GetAllPerms mocks base method.
+func (m *MockRolePerm) GetAllPerms() ([]model.Permission, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAllPerms")
+	ret0, _ := ret[0].([]model.Permission)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAllPerms indicates an expected call of GetAllPerms.
+func (mr *MockRolePermMockRecorder) GetAllPerms() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllPerms", reflect.TypeOf((*MockRolePerm)(nil).GetAllPerms))
+}
+
+// GetAllRoles mocks base method.
+func (m *MockRolePerm) GetAllRoles() ([]model.Role, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAllRoles")
+	ret0, _ := ret[0].([]model.Role)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAllRoles indicates an expected call of GetAllRoles.
+func (mr *MockRolePermMockRecorder) GetAllRoles() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllRoles", reflect.TypeOf((*MockRolePerm)(nil).GetAllRoles))
+}
+
+// GetPermsByRoleId mocks base method.
+func (m *MockRolePerm) GetPermsByRoleId(id int) ([]model.Permission, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetPermsByRoleId", id)
+	ret0, _ := ret[0].([]model.Permission)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetPermsByRoleId indicates an expected call of GetPermsByRoleId.
+func (mr *MockRolePermMockRecorder) GetPermsByRoleId(id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPermsByRoleId", reflect.TypeOf((*MockRolePerm)(nil).GetPermsByRoleId), id)
+}
+
+// GetRoleById mocks base method.
+func (m *MockRolePerm) GetRoleById(id int) (*model.Role, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetRoleById", id)
 	ret0, _ := ret[0].(*model.Role)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetById indicates an expected call of GetById.
-func (mr *MockRoleListMockRecorder) GetById(id interface{}) *gomock.Call {
+// GetRoleById indicates an expected call of GetRoleById.
+func (mr *MockRolePermMockRecorder) GetRoleById(id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetById", reflect.TypeOf((*MockRoleList)(nil).GetById), id)
-}
-
-// SelectPermission mocks base method.
-func (m *MockRoleList) SelectPermission(id int) []model.Permission {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SelectPermission", id)
-	ret0, _ := ret[0].([]model.Permission)
-	return ret0
-}
-
-// SelectPermission indicates an expected call of SelectPermission.
-func (mr *MockRoleListMockRecorder) SelectPermission(id interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SelectPermission", reflect.TypeOf((*MockRoleList)(nil).SelectPermission), id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRoleById", reflect.TypeOf((*MockRolePerm)(nil).GetRoleById), id)
 }
