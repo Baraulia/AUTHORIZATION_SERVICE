@@ -7,6 +7,7 @@ import (
 	"google.golang.org/grpc/reflection"
 	"net"
 	authProto "stlab.itechart-group.com/go/food_delivery/authorization_service/GRPC"
+	"stlab.itechart-group.com/go/food_delivery/authorization_service/auth"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/pkg/logging"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/service"
 )
@@ -67,10 +68,7 @@ func (g *GRPCServer) TokenGenerationById(ctx context.Context, user *authProto.Us
 			return nil, fmt.Errorf("BindUserWithRole:%w", err)
 		}
 	}
-	return &authProto.GeneratedTokens{
-		AccessToken:  fmt.Sprintf("UserId:%d, RoleId:%d", user.UserId, user.RoleId),
-		RefreshToken: "Refresh Token",
-	}, nil
+	return auth.GenerateTokensByAuthUser(user)
 }
 
 func (g *GRPCServer) GetSalt(context.Context, *authProto.ReqSalt) (*authProto.Salt, error) {
