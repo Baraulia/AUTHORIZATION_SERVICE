@@ -6,6 +6,15 @@ import (
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/model"
 )
 
+// @Summary refreshToken
+// @Tags refresh
+// @Description regeneration tokens by refresh token
+// @Accept  json
+// @Produce  json
+// @Param refresh_token header string true "Refresh token"
+// @Success 200 {object} authProto.GeneratedTokens
+// @Failure 401 {object} model.ErrorResponse
+// @Router /refresh [get]
 func (h *Handler) refreshToken(ctx *gin.Context) {
 	header := ctx.GetHeader("Refresh")
 	if header == "" {

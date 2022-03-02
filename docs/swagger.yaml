@@ -1,4 +1,11 @@
 definitions:
+  authProto.GeneratedTokens:
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+    type: object
   model.BindRoleWithPermission:
     properties:
       permissions_id:
@@ -60,7 +67,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: get all permissions
+      description: gets all permissions
       produces:
       - application/json
       responses:
@@ -72,6 +79,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
       summary: getAllPerms
       tags:
       - permission
@@ -103,9 +112,36 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
       summary: createPerm
       tags:
       - permission
+  /refresh:
+    get:
+      consumes:
+      - application/json
+      description: regeneration tokens by refresh token
+      parameters:
+      - description: Refresh token
+        in: header
+        name: refresh_token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/authProto.GeneratedTokens'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: refreshToken
+      tags:
+      - refresh
   /roles/:
     get:
       consumes:
@@ -122,6 +158,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
       summary: getAllRoles
       tags:
       - roles
@@ -153,6 +191,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
       summary: createRole
       tags:
       - roles
@@ -182,6 +222,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
       summary: getRoleById
       tags:
       - roles
@@ -212,6 +254,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
       summary: getPermsByRoleId
       tags:
       - roles
@@ -239,7 +283,14 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
       summary: bindRoleWithPerms
       tags:
       - roles
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

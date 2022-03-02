@@ -18,7 +18,12 @@ const docTemplate = `{
     "paths": {
         "/perms/": {
             "get": {
-                "description": "get all permissions",
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "gets all permissions",
                 "consumes": [
                     "application/json"
                 ],
@@ -45,6 +50,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "create new permission",
                 "consumes": [
                     "application/json"
@@ -92,8 +102,51 @@ const docTemplate = `{
                 }
             }
         },
+        "/refresh": {
+            "get": {
+                "description": "regeneration tokens by refresh token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "refresh"
+                ],
+                "summary": "refreshToken",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Refresh token",
+                        "name": "refresh_token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/authProto.GeneratedTokens"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/roles/": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "gets all roles",
                 "consumes": [
                     "application/json"
@@ -121,6 +174,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "create new role",
                 "consumes": [
                     "application/json"
@@ -170,6 +228,11 @@ const docTemplate = `{
         },
         "/roles/{id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "get role by id",
                 "consumes": [
                     "application/json"
@@ -214,6 +277,11 @@ const docTemplate = `{
         },
         "/roles/{id}/perms": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "get permissions bound with role",
                 "consumes": [
                     "application/json"
@@ -257,6 +325,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "binding role with permissions",
                 "consumes": [
                     "application/json"
@@ -300,6 +373,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "authProto.GeneratedTokens": {
+            "type": "object",
+            "properties": {
+                "accessToken": {
+                    "type": "string"
+                },
+                "refreshToken": {
+                    "type": "string"
+                }
+            }
+        },
         "model.BindRoleWithPermission": {
             "type": "object",
             "properties": {
@@ -381,6 +465,13 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`
