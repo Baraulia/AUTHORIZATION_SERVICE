@@ -15,6 +15,7 @@ type RolePerm interface {
 	GetAllRoles() ([]model.Role, error)
 	CreateRole(role string) (int, error)
 	BindRoleWithPerms(rp *model.BindRoleWithPermission) error
+	GetRoleByUserId(userId int) (int, error)
 
 	GetPermsByRoleId(id int) ([]model.Permission, error)
 	CreatePermission(permission string) (int, error)

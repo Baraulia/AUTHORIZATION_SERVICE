@@ -45,3 +45,15 @@ type ListPerms struct {
 type ErrorResponse struct {
 	Message string `json:"message"`
 }
+
+type UserRole struct {
+	UserId int    `json:"user_id"`
+	Role   string `json:"role"`
+	Perms  string `json:"perms"`
+}
+
+type Claims struct {
+	UserId    int
+	RoleId    int
+	ExpiresAt int64
+}

@@ -22,7 +22,9 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.New()
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	role := router.Group("/roles")
+	router.GET("/refresh", h.refreshToken)
+
+	role := router.Group("/roles", h.userIdentity)
 	{
 		role.POST("/", h.createRole)
 		role.GET("/:id", h.getRoleById)
@@ -30,7 +32,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		role.GET("/:id/perms", h.getPermsByRoleId)
 		role.POST("/:id/perms", h.bindRoleWithPerms)
 	}
-	perm := router.Group("/perms")
+	perm := router.Group("/perms", h.userIdentity)
 	{
 		perm.POST("/", h.createPerm)
 		perm.GET("/", h.getAllPerms)

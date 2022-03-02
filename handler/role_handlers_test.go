@@ -3,6 +3,7 @@ package handler
 import (
 	"bytes"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"net/http/httptest"
@@ -68,7 +69,8 @@ func TestHandler_getRoleById(t *testing.T) {
 			handler := NewHandler(services, logger)
 
 			//Init server
-			r := handler.InitRoutes()
+			r := gin.New()
+			r.GET("/roles/:id", handler.getRoleById)
 
 			//Test request
 			w := httptest.NewRecorder()
@@ -134,7 +136,8 @@ func TestHandler_getAllRoles(t *testing.T) {
 			handler := NewHandler(services, logger)
 
 			//Init server
-			r := handler.InitRoutes()
+			r := gin.New()
+			r.GET("/roles/", handler.getAllRoles)
 
 			//Test request
 			w := httptest.NewRecorder()
@@ -197,7 +200,8 @@ func TestHandler_createRole(t *testing.T) {
 			handler := NewHandler(services, logger)
 
 			//Init server
-			r := handler.InitRoutes()
+			r := gin.New()
+			r.POST("/roles/", handler.createRole)
 
 			//Test request
 			w := httptest.NewRecorder()
@@ -271,7 +275,8 @@ func TestHandler_bindRoleWithPerms(t *testing.T) {
 			handler := NewHandler(services, logger)
 
 			//Init server
-			r := handler.InitRoutes()
+			r := gin.New()
+			r.POST("/roles/:id/perms", handler.bindRoleWithPerms)
 
 			//Test request
 			w := httptest.NewRecorder()

@@ -7,7 +7,6 @@ import (
 	"google.golang.org/grpc/reflection"
 	"net"
 	authProto "stlab.itechart-group.com/go/food_delivery/authorization_service/GRPC"
-	"stlab.itechart-group.com/go/food_delivery/authorization_service/auth"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/pkg/logging"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/service"
 )
@@ -33,42 +32,33 @@ func NewGRPCServer(service *service.Service) {
 	}
 
 }
-func (g *GRPCServer) GetUserWithRights(ctx context.Context, request *authProto.AccessToken) (*authProto.Response, error) {
+func (g *GRPCServer) GetUserWithRights(ctx context.Context, request *authProto.AccessToken) (*authProto.UserRole, error) {
+	return g.service.Authorization.ParseToken(request.AccessToken)
+}
 
-	return &authProto.Response{
-		UserId:      1,
-		Role:        1,
-		Permissions: request.AccessToken,
-	}, nil
-}
-func (g *GRPCServer) CheckToken(context.Context, *authProto.AccessToken) (*authProto.Result, error) {
-	return &authProto.Result{
-		Result: true,
-	}, nil
-}
 func (g *GRPCServer) BindUserAndRole(ctx context.Context, user *authProto.User) (*authProto.ResultBinding, error) {
-	return &authProto.ResultBinding{}, g.service.AddRoleToUser(user)
+	return g.service.AddRoleToUser(user)
 }
 
-func (g *GRPCServer) TokenGenerationByRefresh(context.Context, *authProto.RefreshToken) (*authProto.GeneratedTokens, error) {
-	return nil, nil
+func (g *GRPCServer) TokenGenerationByRefresh(ctx context.Context, token *authProto.RefreshToken) (*authProto.GeneratedTokens, error) {
+	return g.service.RefreshTokens(token.RefreshToken)
 }
-func (g *GRPCServer) TokenGenerationById(ctx context.Context, user *authProto.User) (*authProto.GeneratedTokens, error) {
+func (g *GRPCServer) TokenGenerationByUserId(ctx context.Context, user *authProto.User) (*authProto.GeneratedTokens, error) {
 	if user.RoleId == 0 {
-		role, err := g.service.GetRoleById(int(user.UserId))
+		roleId, err := g.service.GetRoleByUserId(int(user.UserId))
 		if err != nil {
 			logger.Errorf("GetRoleById:%s", err)
 			return nil, fmt.Errorf("GetRoleById:%w", err)
 		}
-		user.RoleId = int32(role.ID)
+		user.RoleId = int32(roleId)
 	} else {
-		err := g.service.AddRoleToUser(user)
+		_, err := g.service.AddRoleToUser(user)
 		if err != nil {
 			logger.Errorf("BindUserWithRole:%s", err)
 			return nil, fmt.Errorf("BindUserWithRole:%w", err)
 		}
 	}
-	return auth.GenerateTokensByAuthUser(user)
+	return g.service.GenerateTokensByAuthUser(user)
 }
 
 func (g *GRPCServer) GetSalt(context.Context, *authProto.ReqSalt) (*authProto.Salt, error) {

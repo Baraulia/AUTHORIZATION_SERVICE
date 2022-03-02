@@ -20,6 +20,10 @@ func (s *RolePermService) GetRoleById(id int) (*model.Role, error) {
 	return s.repo.RolePerm.GetRoleById(id)
 }
 
+func (s *RolePermService) GetRoleByUserId(userId int) (int, error) {
+	return s.repo.RolePerm.GetRoleByUserId(userId)
+}
+
 func (s *RolePermService) GetAllRoles() ([]model.Role, error) {
 	return s.repo.GetAllRoles()
 }
@@ -48,6 +52,10 @@ func (s *RolePermService) GetAllPerms() ([]model.Permission, error) {
 	return s.repo.RolePerm.GetAllPerms()
 }
 
-func (s *RolePermService) AddRoleToUser(user *authProto.User) error {
-	return s.repo.AddRoleToUser(user)
+func (s *RolePermService) AddRoleToUser(user *authProto.User) (*authProto.ResultBinding, error) {
+	err := s.repo.AddRoleToUser(user)
+	if err != nil {
+		return &authProto.ResultBinding{Result: false}, err
+	}
+	return &authProto.ResultBinding{Result: true}, nil
 }
