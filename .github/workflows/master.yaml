@@ -85,5 +85,6 @@ jobs:
             docker run -e AUTH_SERVER_URL -e DB_PORT -e DB_USER -e DB_PASSWORD -e HOST -e DB_DATABASE \
             -e DB_SSL_MODE -e API_SERVER_PORT -d \
             --restart always --publish 82:80 \
+            --publish 8090:8090 \
             --name $(echo $CONTAINER_NAME) \
             $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7)
