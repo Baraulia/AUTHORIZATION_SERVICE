@@ -22,7 +22,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.New()
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.Use(
-		CorsMiddleware,
+		h.CorsMiddleware,
 	)
 	router.GET("/refresh", h.refreshToken)
 
