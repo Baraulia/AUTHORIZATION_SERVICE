@@ -7,7 +7,7 @@ import (
 )
 
 // @Summary createPerm
-// @Security ApiKeyAuth
+
 // @Tags permission
 // @Description create new permission
 // @Accept  json
@@ -35,7 +35,7 @@ func (h *Handler) createPerm(ctx *gin.Context) {
 }
 
 // @Summary getAllPerms
-// @Security ApiKeyAuth
+
 // @Tags permission
 // @Description gets all permissions
 // @Accept  json
