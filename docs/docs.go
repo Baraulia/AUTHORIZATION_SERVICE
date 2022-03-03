@@ -18,11 +18,6 @@ const docTemplate = `{
     "paths": {
         "/perms/": {
             "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
                 "description": "gets all permissions",
                 "consumes": [
                     "application/json"
@@ -33,7 +28,6 @@ const docTemplate = `{
                 "tags": [
                     "permission"
                 ],
-                "summary": "getAllPerms",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -50,11 +44,6 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
                 "description": "create new permission",
                 "consumes": [
                     "application/json"
@@ -65,7 +54,6 @@ const docTemplate = `{
                 "tags": [
                     "permission"
                 ],
-                "summary": "createPerm",
                 "parameters": [
                     {
                         "description": "Perm",
@@ -142,11 +130,6 @@ const docTemplate = `{
         },
         "/roles/": {
             "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
                 "description": "gets all roles",
                 "consumes": [
                     "application/json"
@@ -157,7 +140,6 @@ const docTemplate = `{
                 "tags": [
                     "roles"
                 ],
-                "summary": "getAllRoles",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -174,11 +156,6 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
                 "description": "create new role",
                 "consumes": [
                     "application/json"
@@ -189,7 +166,6 @@ const docTemplate = `{
                 "tags": [
                     "roles"
                 ],
-                "summary": "createRole",
                 "parameters": [
                     {
                         "description": "Role",
@@ -228,11 +204,6 @@ const docTemplate = `{
         },
         "/roles/{id}": {
             "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
                 "description": "get role by id",
                 "consumes": [
                     "application/json"
@@ -243,7 +214,6 @@ const docTemplate = `{
                 "tags": [
                     "roles"
                 ],
-                "summary": "getRoleById",
                 "parameters": [
                     {
                         "type": "integer",
@@ -277,11 +247,6 @@ const docTemplate = `{
         },
         "/roles/{id}/perms": {
             "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
                 "description": "get permissions bound with role",
                 "consumes": [
                     "application/json"
@@ -292,7 +257,6 @@ const docTemplate = `{
                 "tags": [
                     "roles"
                 ],
-                "summary": "getPermsByRoleId",
                 "parameters": [
                     {
                         "type": "integer",
@@ -325,11 +289,6 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
                 "description": "binding role with permissions",
                 "consumes": [
                     "application/json"
@@ -340,7 +299,6 @@ const docTemplate = `{
                 "tags": [
                     "roles"
                 ],
-                "summary": "bindRoleWithPerms",
                 "parameters": [
                     {
                         "description": "Role and Perms",
@@ -465,13 +423,6 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
-        }
-    },
-    "securityDefinitions": {
-        "ApiKeyAuth": {
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header"
         }
     }
 }`
