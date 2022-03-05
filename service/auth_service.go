@@ -25,12 +25,18 @@ func NewAuthService(repo repository.Repository, logger logging.Logger) *AuthServ
 	return &AuthService{repo: repo, logger: logger}
 }
 
+type MyClaims struct {
+	UserId int32
+	RoleId int32
+	jwt.StandardClaims
+}
+
 func (a *AuthService) GenerateTokensByAuthUser(user *authProto.User) (*authProto.GeneratedTokens, error) {
 	expired := time.Now().Add(AccessTokenTTL)
-	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"UserId":    user.UserId,
-		"RoleId":    user.RoleId,
-		"ExpiresAt": expired.Unix(),
+	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, MyClaims{
+		UserId:         user.UserId,
+		RoleId:         user.RoleId,
+		StandardClaims: jwt.StandardClaims{ExpiresAt: expired.Unix()},
 	})
 	accessTokenString, err := accessToken.SignedString([]byte(Secret))
 	if err != nil {
@@ -39,9 +45,9 @@ func (a *AuthService) GenerateTokensByAuthUser(user *authProto.User) (*authProto
 	}
 
 	refreshExpired := time.Now().Add(RefreshTokenTTL)
-	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"UserId":    user.UserId,
-		"ExpiresAt": refreshExpired.Unix(),
+	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, MyClaims{
+		UserId:         user.UserId,
+		StandardClaims: jwt.StandardClaims{ExpiresAt: refreshExpired.Unix()},
 	})
 
 	refreshTokenString, err := refreshToken.SignedString([]byte(Secret))
@@ -58,7 +64,7 @@ func (a *AuthService) GenerateTokensByAuthUser(user *authProto.User) (*authProto
 }
 
 func (a *AuthService) ParseToken(token string) (*authProto.UserRole, error) {
-	parseToken, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
+	parseToken, err := jwt.ParseWithClaims(token, &MyClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid signing method")
 		}
@@ -68,18 +74,18 @@ func (a *AuthService) ParseToken(token string) (*authProto.UserRole, error) {
 		return nil, fmt.Errorf("ParseToken:%w", err)
 	}
 
-	claims, ok := parseToken.Claims.(jwt.MapClaims)
+	claims, ok := parseToken.Claims.(*MyClaims)
 	if !ok {
 		return nil, errors.New("error while parsing access token")
 	}
-	if claims["ExpiresAt"].(int64) > time.Now().Unix() {
+	if claims.ExpiresAt < time.Now().Unix() {
 		return nil, errors.New("token expired")
 	}
-	role, err := a.repo.RolePerm.GetRoleById(claims["RoleId"].(int))
+	role, err := a.repo.RolePerm.GetRoleById(int(claims.RoleId))
 	if err != nil {
 		return nil, err
 	}
-	perms, err := a.repo.RolePerm.GetPermsByRoleId(claims["RoleId"].(int))
+	perms, err := a.repo.RolePerm.GetPermsByRoleId(int(claims.RoleId))
 	if err != nil {
 		return nil, err
 	}
@@ -89,14 +95,14 @@ func (a *AuthService) ParseToken(token string) (*authProto.UserRole, error) {
 	}
 	stringPerms := strings.Join(slicePerms[:], ",")
 	return &authProto.UserRole{
-		UserId:      claims["UserId"].(int32),
+		UserId:      claims.UserId,
 		Role:        role.Name,
 		Permissions: stringPerms,
 	}, nil
 }
 
 func (a *AuthService) RefreshTokens(refreshToken string) (*authProto.GeneratedTokens, error) {
-	parseToken, err := jwt.Parse(refreshToken, func(token *jwt.Token) (interface{}, error) {
+	parseToken, err := jwt.ParseWithClaims(refreshToken, &MyClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid signing method")
 		}
@@ -105,18 +111,18 @@ func (a *AuthService) RefreshTokens(refreshToken string) (*authProto.GeneratedTo
 	if err != nil {
 		return nil, fmt.Errorf("RefreshTokens:%w", err)
 	}
-	claims, ok := parseToken.Claims.(jwt.MapClaims)
+	claims, ok := parseToken.Claims.(*MyClaims)
 	if !ok {
 		return nil, errors.New("error while parsing access token")
 	}
-	if claims["ExpiresAt"].(int64) > time.Now().Unix() {
+	if claims.StandardClaims.ExpiresAt < time.Now().Unix() {
 		return nil, errors.New("token expired")
 	}
-	roleId, err := a.repo.RolePerm.GetRoleByUserId(claims["UserId"].(int))
+	roleId, err := a.repo.RolePerm.GetRoleByUserId(int(claims.UserId))
 	if err != nil {
 		return nil, err
 	}
-	return a.GenerateTokensByAuthUser(&authProto.User{UserId: claims["UserId"].(int32), RoleId: int32(roleId)})
+	return a.GenerateTokensByAuthUser(&authProto.User{UserId: claims.UserId, RoleId: int32(roleId)})
 }
 
 func (a *AuthService) CheckRights(token string, requiredRole string) (bool, error) {
