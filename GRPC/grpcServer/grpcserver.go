@@ -37,7 +37,11 @@ func (g *GRPCServer) GetUserWithRights(ctx context.Context, request *authProto.A
 }
 
 func (g *GRPCServer) BindUserAndRole(ctx context.Context, user *authProto.User) (*authProto.ResultBinding, error) {
-	return g.service.AddRoleToUser(user)
+	res, err := g.service.RolePerm.AddRoleToUser(user)
+	if err != nil {
+		return nil, err
+	}
+	return &authProto.ResultBinding{Result: res}, nil
 }
 
 func (g *GRPCServer) TokenGenerationByRefresh(ctx context.Context, token *authProto.RefreshToken) (*authProto.GeneratedTokens, error) {

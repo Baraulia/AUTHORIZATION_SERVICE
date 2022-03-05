@@ -64,19 +64,9 @@ func (a *AuthService) GenerateTokensByAuthUser(user *authProto.User) (*authProto
 }
 
 func (a *AuthService) ParseToken(token string) (*authProto.UserRole, error) {
-	parseToken, err := jwt.ParseWithClaims(token, &MyClaims{}, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, errors.New("invalid signing method")
-		}
-		return []byte(Secret), nil
-	})
+	claims, err := ParseGWTToken(token)
 	if err != nil {
-		return nil, fmt.Errorf("ParseToken:%w", err)
-	}
-
-	claims, ok := parseToken.Claims.(*MyClaims)
-	if !ok {
-		return nil, errors.New("error while parsing access token")
+		return nil, err
 	}
 	if claims.ExpiresAt < time.Now().Unix() {
 		return nil, errors.New("token expired")
@@ -102,18 +92,9 @@ func (a *AuthService) ParseToken(token string) (*authProto.UserRole, error) {
 }
 
 func (a *AuthService) RefreshTokens(refreshToken string) (*authProto.GeneratedTokens, error) {
-	parseToken, err := jwt.ParseWithClaims(refreshToken, &MyClaims{}, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, errors.New("invalid signing method")
-		}
-		return []byte(Secret), nil
-	})
+	claims, err := ParseGWTToken(refreshToken)
 	if err != nil {
-		return nil, fmt.Errorf("RefreshTokens:%w", err)
-	}
-	claims, ok := parseToken.Claims.(*MyClaims)
-	if !ok {
-		return nil, errors.New("error while parsing access token")
+		return nil, err
 	}
 	if claims.StandardClaims.ExpiresAt < time.Now().Unix() {
 		return nil, errors.New("token expired")
@@ -134,4 +115,21 @@ func (a *AuthService) CheckRights(token string, requiredRole string) (bool, erro
 		return false, errors.New("no required rights")
 	}
 	return true, nil
+}
+
+func ParseGWTToken(token string) (*MyClaims, error) {
+	parseToken, err := jwt.ParseWithClaims(token, &MyClaims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("invalid signing method")
+		}
+		return []byte(Secret), nil
+	})
+	if err != nil {
+		return nil, fmt.Errorf("ParseGWTToken:%w", err)
+	}
+	claims, ok := parseToken.Claims.(*MyClaims)
+	if !ok {
+		return nil, errors.New("error while parsing token")
+	}
+	return claims, nil
 }

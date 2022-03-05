@@ -27,7 +27,7 @@ type RolePerm interface {
 	CreatePermission(permission string) (int, error)
 	GetAllPerms() ([]model.Permission, error)
 
-	AddRoleToUser(user *authProto.User) (*authProto.ResultBinding, error)
+	AddRoleToUser(user *authProto.User) (bool, error)
 }
 
 type Service struct {

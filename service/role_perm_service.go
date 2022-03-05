@@ -52,10 +52,10 @@ func (s *RolePermService) GetAllPerms() ([]model.Permission, error) {
 	return s.repo.RolePerm.GetAllPerms()
 }
 
-func (s *RolePermService) AddRoleToUser(user *authProto.User) (*authProto.ResultBinding, error) {
+func (s *RolePermService) AddRoleToUser(user *authProto.User) (bool, error) {
 	err := s.repo.AddRoleToUser(user)
 	if err != nil {
-		return &authProto.ResultBinding{Result: false}, err
+		return false, err
 	}
-	return &authProto.ResultBinding{Result: true}, nil
+	return true, nil
 }

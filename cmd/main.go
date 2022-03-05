@@ -16,7 +16,6 @@ import (
 
 // @title Authorization Service
 // @description Authorization Service for Food Delivery Application
-
 func main() {
 	logger := logging.GetLogger()
 	db, err := database.NewPostgresDB(database.PostgresDB{
