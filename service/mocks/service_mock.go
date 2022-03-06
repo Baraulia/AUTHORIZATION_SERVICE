@@ -119,10 +119,10 @@ func (m *MockRolePerm) EXPECT() *MockRolePermMockRecorder {
 }
 
 // AddRoleToUser mocks base method.
-func (m *MockRolePerm) AddRoleToUser(user *authProto.User) (*authProto.ResultBinding, error) {
+func (m *MockRolePerm) AddRoleToUser(user *authProto.User) (bool, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddRoleToUser", user)
-	ret0, _ := ret[0].(*authProto.ResultBinding)
+	ret0, _ := ret[0].(bool)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

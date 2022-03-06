@@ -64,7 +64,3 @@ func (g *GRPCServer) TokenGenerationByUserId(ctx context.Context, user *authProt
 	}
 	return g.service.GenerateTokensByAuthUser(user)
 }
-
-func (g *GRPCServer) GetSalt(context.Context, *authProto.ReqSalt) (*authProto.Salt, error) {
-	return nil, nil
-}

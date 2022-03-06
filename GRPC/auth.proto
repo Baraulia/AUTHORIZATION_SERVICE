@@ -9,7 +9,6 @@ service Auth {
   rpc BindUserAndRole(User) returns (ResultBinding) {}
   rpc TokenGenerationByRefresh(RefreshToken) returns (GeneratedTokens) {}
   rpc TokenGenerationByUserId(User) returns (GeneratedTokens) {}
-  rpc GetSalt(ReqSalt) returns (Salt) {}
 }
 
 message UserRole {
@@ -34,13 +33,6 @@ message GeneratedTokens {
 message User {
   int32 userId = 1;
   int32 roleId = 2;
-}
-
-message ReqSalt {
-}
-
-message Salt {
-  string salt = 1;
 }
 
 message ResultBinding {
