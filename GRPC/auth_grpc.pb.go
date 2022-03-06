@@ -18,12 +18,10 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthClient interface {
-	GetUserWithRights(ctx context.Context, in *AccessToken, opts ...grpc.CallOption) (*Response, error)
+	GetUserWithRights(ctx context.Context, in *AccessToken, opts ...grpc.CallOption) (*UserRole, error)
 	BindUserAndRole(ctx context.Context, in *User, opts ...grpc.CallOption) (*ResultBinding, error)
-	CheckToken(ctx context.Context, in *AccessToken, opts ...grpc.CallOption) (*Result, error)
 	TokenGenerationByRefresh(ctx context.Context, in *RefreshToken, opts ...grpc.CallOption) (*GeneratedTokens, error)
-	TokenGenerationById(ctx context.Context, in *User, opts ...grpc.CallOption) (*GeneratedTokens, error)
-	GetSalt(ctx context.Context, in *ReqSalt, opts ...grpc.CallOption) (*Salt, error)
+	TokenGenerationByUserId(ctx context.Context, in *User, opts ...grpc.CallOption) (*GeneratedTokens, error)
 }
 
 type authClient struct {
@@ -34,8 +32,8 @@ func NewAuthClient(cc grpc.ClientConnInterface) AuthClient {
 	return &authClient{cc}
 }
 
-func (c *authClient) GetUserWithRights(ctx context.Context, in *AccessToken, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *authClient) GetUserWithRights(ctx context.Context, in *AccessToken, opts ...grpc.CallOption) (*UserRole, error) {
+	out := new(UserRole)
 	err := c.cc.Invoke(ctx, "/auth.Auth/GetUserWithRights", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -52,15 +50,6 @@ func (c *authClient) BindUserAndRole(ctx context.Context, in *User, opts ...grpc
 	return out, nil
 }
 
-func (c *authClient) CheckToken(ctx context.Context, in *AccessToken, opts ...grpc.CallOption) (*Result, error) {
-	out := new(Result)
-	err := c.cc.Invoke(ctx, "/auth.Auth/CheckToken", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *authClient) TokenGenerationByRefresh(ctx context.Context, in *RefreshToken, opts ...grpc.CallOption) (*GeneratedTokens, error) {
 	out := new(GeneratedTokens)
 	err := c.cc.Invoke(ctx, "/auth.Auth/TokenGenerationByRefresh", in, out, opts...)
@@ -70,18 +59,9 @@ func (c *authClient) TokenGenerationByRefresh(ctx context.Context, in *RefreshTo
 	return out, nil
 }
 
-func (c *authClient) TokenGenerationById(ctx context.Context, in *User, opts ...grpc.CallOption) (*GeneratedTokens, error) {
+func (c *authClient) TokenGenerationByUserId(ctx context.Context, in *User, opts ...grpc.CallOption) (*GeneratedTokens, error) {
 	out := new(GeneratedTokens)
-	err := c.cc.Invoke(ctx, "/auth.Auth/TokenGenerationById", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *authClient) GetSalt(ctx context.Context, in *ReqSalt, opts ...grpc.CallOption) (*Salt, error) {
-	out := new(Salt)
-	err := c.cc.Invoke(ctx, "/auth.Auth/GetSalt", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/auth.Auth/TokenGenerationByUserId", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -92,12 +72,10 @@ func (c *authClient) GetSalt(ctx context.Context, in *ReqSalt, opts ...grpc.Call
 // All implementations must embed UnimplementedAuthServer
 // for forward compatibility
 type AuthServer interface {
-	GetUserWithRights(context.Context, *AccessToken) (*Response, error)
+	GetUserWithRights(context.Context, *AccessToken) (*UserRole, error)
 	BindUserAndRole(context.Context, *User) (*ResultBinding, error)
-	CheckToken(context.Context, *AccessToken) (*Result, error)
 	TokenGenerationByRefresh(context.Context, *RefreshToken) (*GeneratedTokens, error)
-	TokenGenerationById(context.Context, *User) (*GeneratedTokens, error)
-	GetSalt(context.Context, *ReqSalt) (*Salt, error)
+	TokenGenerationByUserId(context.Context, *User) (*GeneratedTokens, error)
 	mustEmbedUnimplementedAuthServer()
 }
 
@@ -105,23 +83,17 @@ type AuthServer interface {
 type UnimplementedAuthServer struct {
 }
 
-func (UnimplementedAuthServer) GetUserWithRights(context.Context, *AccessToken) (*Response, error) {
+func (UnimplementedAuthServer) GetUserWithRights(context.Context, *AccessToken) (*UserRole, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserWithRights not implemented")
 }
 func (UnimplementedAuthServer) BindUserAndRole(context.Context, *User) (*ResultBinding, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BindUserAndRole not implemented")
 }
-func (UnimplementedAuthServer) CheckToken(context.Context, *AccessToken) (*Result, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CheckToken not implemented")
-}
 func (UnimplementedAuthServer) TokenGenerationByRefresh(context.Context, *RefreshToken) (*GeneratedTokens, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TokenGenerationByRefresh not implemented")
 }
-func (UnimplementedAuthServer) TokenGenerationById(context.Context, *User) (*GeneratedTokens, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method TokenGenerationById not implemented")
-}
-func (UnimplementedAuthServer) GetSalt(context.Context, *ReqSalt) (*Salt, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetSalt not implemented")
+func (UnimplementedAuthServer) TokenGenerationByUserId(context.Context, *User) (*GeneratedTokens, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TokenGenerationByUserId not implemented")
 }
 func (UnimplementedAuthServer) mustEmbedUnimplementedAuthServer() {}
 
@@ -172,24 +144,6 @@ func _Auth_BindUserAndRole_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Auth_CheckToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AccessToken)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServer).CheckToken(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/auth.Auth/CheckToken",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServer).CheckToken(ctx, req.(*AccessToken))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Auth_TokenGenerationByRefresh_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RefreshToken)
 	if err := dec(in); err != nil {
@@ -208,38 +162,20 @@ func _Auth_TokenGenerationByRefresh_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Auth_TokenGenerationById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Auth_TokenGenerationByUserId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(User)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AuthServer).TokenGenerationById(ctx, in)
+		return srv.(AuthServer).TokenGenerationByUserId(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/auth.Auth/TokenGenerationById",
+		FullMethod: "/auth.Auth/TokenGenerationByUserId",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServer).TokenGenerationById(ctx, req.(*User))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Auth_GetSalt_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ReqSalt)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServer).GetSalt(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/auth.Auth/GetSalt",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServer).GetSalt(ctx, req.(*ReqSalt))
+		return srv.(AuthServer).TokenGenerationByUserId(ctx, req.(*User))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -260,20 +196,12 @@ var Auth_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Auth_BindUserAndRole_Handler,
 		},
 		{
-			MethodName: "CheckToken",
-			Handler:    _Auth_CheckToken_Handler,
-		},
-		{
 			MethodName: "TokenGenerationByRefresh",
 			Handler:    _Auth_TokenGenerationByRefresh_Handler,
 		},
 		{
-			MethodName: "TokenGenerationById",
-			Handler:    _Auth_TokenGenerationById_Handler,
-		},
-		{
-			MethodName: "GetSalt",
-			Handler:    _Auth_GetSalt_Handler,
+			MethodName: "TokenGenerationByUserId",
+			Handler:    _Auth_TokenGenerationByUserId_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

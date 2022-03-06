@@ -132,3 +132,13 @@ func (r *RolePermPostgres) AddRoleToUser(user *authProto.User) error {
 	}
 	return nil
 }
+
+func (r *RolePermPostgres) GetRoleByUserId(userId int) (int, error) {
+	var roleId int
+	row := r.db.QueryRow("SELECT role_id FROM user_role WHERE user_id = $1", userId)
+	if err := row.Scan(&roleId); err != nil {
+		r.logger.Errorf("GetRoleByUserId: error while scanning for roleId:%s", err)
+		return 0, fmt.Errorf("getRoleByUserId: error while scanning for roleId:%w", err)
+	}
+	return roleId, nil
+}

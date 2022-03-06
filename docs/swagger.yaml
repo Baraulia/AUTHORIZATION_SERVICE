@@ -1,4 +1,11 @@
 definitions:
+  authProto.GeneratedTokens:
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+    type: object
   model.BindRoleWithPermission:
     properties:
       permissions_id:
@@ -60,7 +67,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: get all permissions
+      description: gets all permissions
       produces:
       - application/json
       responses:
@@ -72,7 +79,6 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
-      summary: getAllPerms
       tags:
       - permission
     post:
@@ -103,9 +109,33 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
-      summary: createPerm
       tags:
       - permission
+  /refresh:
+    get:
+      consumes:
+      - application/json
+      description: regeneration tokens by refresh token
+      parameters:
+      - description: Refresh token
+        in: header
+        name: refresh_token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/authProto.GeneratedTokens'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: refreshToken
+      tags:
+      - refresh
   /roles/:
     get:
       consumes:
@@ -122,7 +152,6 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
-      summary: getAllRoles
       tags:
       - roles
     post:
@@ -153,7 +182,6 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
-      summary: createRole
       tags:
       - roles
   /roles/{id}:
@@ -182,7 +210,6 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
-      summary: getRoleById
       tags:
       - roles
   /roles/{id}/perms:
@@ -212,7 +239,6 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
-      summary: getPermsByRoleId
       tags:
       - roles
     post:
@@ -239,7 +265,6 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
-      summary: bindRoleWithPerms
       tags:
       - roles
 swagger: "2.0"

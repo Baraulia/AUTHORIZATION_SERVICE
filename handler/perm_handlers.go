@@ -7,6 +7,7 @@ import (
 )
 
 // @Summary createPerm
+
 // @Tags permission
 // @Description create new permission
 // @Accept  json
@@ -34,8 +35,9 @@ func (h *Handler) createPerm(ctx *gin.Context) {
 }
 
 // @Summary getAllPerms
+
 // @Tags permission
-// @Description get all permissions
+// @Description gets all permissions
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} model.ListPerms

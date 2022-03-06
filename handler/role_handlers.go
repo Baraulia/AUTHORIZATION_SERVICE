@@ -8,6 +8,7 @@ import (
 )
 
 // @Summary getRoleById
+
 // @Tags roles
 // @Description get role by id
 // @Accept  json
@@ -33,6 +34,7 @@ func (h *Handler) getRoleById(ctx *gin.Context) {
 }
 
 // @Summary createRole
+
 // @Tags roles
 // @Description create new role
 // @Accept  json
@@ -60,6 +62,7 @@ func (h *Handler) createRole(ctx *gin.Context) {
 }
 
 // @Summary bindRoleWithPerms
+
 // @Tags roles
 // @Description binding role with permissions
 // @Accept  json
@@ -85,6 +88,7 @@ func (h *Handler) bindRoleWithPerms(ctx *gin.Context) {
 }
 
 // @Summary getAllRoles
+
 // @Tags roles
 // @Description gets all roles
 // @Accept  json
@@ -102,6 +106,7 @@ func (h *Handler) getAllRoles(ctx *gin.Context) {
 }
 
 // @Summary getPermsByRoleId
+
 // @Tags roles
 // @Description get permissions bound with role
 // @Accept  json

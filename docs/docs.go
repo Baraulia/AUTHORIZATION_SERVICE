@@ -18,7 +18,7 @@ const docTemplate = `{
     "paths": {
         "/perms/": {
             "get": {
-                "description": "get all permissions",
+                "description": "gets all permissions",
                 "consumes": [
                     "application/json"
                 ],
@@ -28,7 +28,6 @@ const docTemplate = `{
                 "tags": [
                     "permission"
                 ],
-                "summary": "getAllPerms",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -55,7 +54,6 @@ const docTemplate = `{
                 "tags": [
                     "permission"
                 ],
-                "summary": "createPerm",
                 "parameters": [
                     {
                         "description": "Perm",
@@ -92,6 +90,44 @@ const docTemplate = `{
                 }
             }
         },
+        "/refresh": {
+            "get": {
+                "description": "regeneration tokens by refresh token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "refresh"
+                ],
+                "summary": "refreshToken",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Refresh token",
+                        "name": "refresh_token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/authProto.GeneratedTokens"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/roles/": {
             "get": {
                 "description": "gets all roles",
@@ -104,7 +140,6 @@ const docTemplate = `{
                 "tags": [
                     "roles"
                 ],
-                "summary": "getAllRoles",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -131,7 +166,6 @@ const docTemplate = `{
                 "tags": [
                     "roles"
                 ],
-                "summary": "createRole",
                 "parameters": [
                     {
                         "description": "Role",
@@ -180,7 +214,6 @@ const docTemplate = `{
                 "tags": [
                     "roles"
                 ],
-                "summary": "getRoleById",
                 "parameters": [
                     {
                         "type": "integer",
@@ -224,7 +257,6 @@ const docTemplate = `{
                 "tags": [
                     "roles"
                 ],
-                "summary": "getPermsByRoleId",
                 "parameters": [
                     {
                         "type": "integer",
@@ -267,7 +299,6 @@ const docTemplate = `{
                 "tags": [
                     "roles"
                 ],
-                "summary": "bindRoleWithPerms",
                 "parameters": [
                     {
                         "description": "Role and Perms",
@@ -300,6 +331,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "authProto.GeneratedTokens": {
+            "type": "object",
+            "properties": {
+                "accessToken": {
+                    "type": "string"
+                },
+                "refreshToken": {
+                    "type": "string"
+                }
+            }
+        },
         "model.BindRoleWithPermission": {
             "type": "object",
             "properties": {

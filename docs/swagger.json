@@ -8,7 +8,7 @@
     "paths": {
         "/perms/": {
             "get": {
-                "description": "get all permissions",
+                "description": "gets all permissions",
                 "consumes": [
                     "application/json"
                 ],
@@ -18,7 +18,6 @@
                 "tags": [
                     "permission"
                 ],
-                "summary": "getAllPerms",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -45,7 +44,6 @@
                 "tags": [
                     "permission"
                 ],
-                "summary": "createPerm",
                 "parameters": [
                     {
                         "description": "Perm",
@@ -82,6 +80,44 @@
                 }
             }
         },
+        "/refresh": {
+            "get": {
+                "description": "regeneration tokens by refresh token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "refresh"
+                ],
+                "summary": "refreshToken",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Refresh token",
+                        "name": "refresh_token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/authProto.GeneratedTokens"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/roles/": {
             "get": {
                 "description": "gets all roles",
@@ -94,7 +130,6 @@
                 "tags": [
                     "roles"
                 ],
-                "summary": "getAllRoles",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -121,7 +156,6 @@
                 "tags": [
                     "roles"
                 ],
-                "summary": "createRole",
                 "parameters": [
                     {
                         "description": "Role",
@@ -170,7 +204,6 @@
                 "tags": [
                     "roles"
                 ],
-                "summary": "getRoleById",
                 "parameters": [
                     {
                         "type": "integer",
@@ -214,7 +247,6 @@
                 "tags": [
                     "roles"
                 ],
-                "summary": "getPermsByRoleId",
                 "parameters": [
                     {
                         "type": "integer",
@@ -257,7 +289,6 @@
                 "tags": [
                     "roles"
                 ],
-                "summary": "bindRoleWithPerms",
                 "parameters": [
                     {
                         "description": "Role and Perms",
@@ -290,6 +321,17 @@
         }
     },
     "definitions": {
+        "authProto.GeneratedTokens": {
+            "type": "object",
+            "properties": {
+                "accessToken": {
+                    "type": "string"
+                },
+                "refreshToken": {
+                    "type": "string"
+                }
+            }
+        },
         "model.BindRoleWithPermission": {
             "type": "object",
             "properties": {
