@@ -27,7 +27,7 @@ func NewAuthService(repo repository.Repository, logger logging.Logger) *AuthServ
 
 type MyClaims struct {
 	UserId int32
-	RoleId int32
+	Role   string
 	jwt.StandardClaims
 }
 
@@ -35,7 +35,7 @@ func (a *AuthService) GenerateTokensByAuthUser(user *authProto.User) (*authProto
 	expired := time.Now().Add(AccessTokenTTL)
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, MyClaims{
 		UserId:         user.UserId,
-		RoleId:         user.RoleId,
+		Role:           user.Role,
 		StandardClaims: jwt.StandardClaims{ExpiresAt: expired.Unix()},
 	})
 	accessTokenString, err := accessToken.SignedString([]byte(Secret))
@@ -71,11 +71,11 @@ func (a *AuthService) ParseToken(token string) (*authProto.UserRole, error) {
 	if claims.ExpiresAt < time.Now().Unix() {
 		return nil, errors.New("token expired")
 	}
-	role, err := a.repo.RolePerm.GetRoleById(int(claims.RoleId))
+	role, err := a.repo.RolePerm.GetRoleByName(claims.Role)
 	if err != nil {
 		return nil, err
 	}
-	perms, err := a.repo.RolePerm.GetPermsByRoleId(int(claims.RoleId))
+	perms, err := a.repo.RolePerm.GetPermsByRoleId(role.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -99,11 +99,11 @@ func (a *AuthService) RefreshTokens(refreshToken string) (*authProto.GeneratedTo
 	if claims.StandardClaims.ExpiresAt < time.Now().Unix() {
 		return nil, errors.New("token expired")
 	}
-	roleId, err := a.repo.RolePerm.GetRoleByUserId(int(claims.UserId))
+	role, err := a.repo.RolePerm.GetRoleByUserId(int(claims.UserId))
 	if err != nil {
 		return nil, err
 	}
-	return a.GenerateTokensByAuthUser(&authProto.User{UserId: claims.UserId, RoleId: int32(roleId)})
+	return a.GenerateTokensByAuthUser(&authProto.User{UserId: claims.UserId, Role: role.Name})
 }
 
 func (a *AuthService) CheckRights(token string, requiredRole string) (bool, error) {

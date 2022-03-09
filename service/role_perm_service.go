@@ -20,7 +20,7 @@ func (s *RolePermService) GetRoleById(id int) (*model.Role, error) {
 	return s.repo.RolePerm.GetRoleById(id)
 }
 
-func (s *RolePermService) GetRoleByUserId(userId int) (int, error) {
+func (s *RolePermService) GetRoleByUserId(userId int) (*model.Role, error) {
 	return s.repo.RolePerm.GetRoleByUserId(userId)
 }
 

@@ -28,6 +28,16 @@ func (r *RolePermPostgres) GetRoleById(id int) (*model.Role, error) {
 	}
 	return &role, nil
 }
+func (r *RolePermPostgres) GetRoleByName(roleName string) (*model.Role, error) {
+	var role model.Role
+	query := "SELECT id, name FROM roles WHERE name = $1"
+	row := r.db.QueryRow(query, roleName)
+	if err := row.Scan(&role.ID, &role.Name); err != nil {
+		logrus.Errorf("GetRoleByName: error while scanning for role:%s", err)
+		return nil, fmt.Errorf("GetRoleByName: repository error:%w", err)
+	}
+	return &role, nil
+}
 
 func (r *RolePermPostgres) GetAllRoles() ([]model.Role, error) {
 	var roles []model.Role
@@ -125,7 +135,7 @@ func (r *RolePermPostgres) GetAllPerms() ([]model.Permission, error) {
 }
 
 func (r *RolePermPostgres) AddRoleToUser(user *authProto.User) error {
-	_, err := r.db.Exec("INSERT into user_role (role_id, user_id) values ($1, $2)", user.RoleId, user.UserId)
+	_, err := r.db.Exec("INSERT into user_role (role_id, user_id) values ((SELECT id FROM roles WHERE name = $1), $2)", user.Role, user.UserId)
 	if err != nil {
 		r.logger.Errorf("BindUserWithRole:%s", err)
 		return fmt.Errorf("BindUserWithRole:%w", err)
@@ -133,12 +143,12 @@ func (r *RolePermPostgres) AddRoleToUser(user *authProto.User) error {
 	return nil
 }
 
-func (r *RolePermPostgres) GetRoleByUserId(userId int) (int, error) {
-	var roleId int
-	row := r.db.QueryRow("SELECT role_id FROM user_role WHERE user_id = $1", userId)
-	if err := row.Scan(&roleId); err != nil {
+func (r *RolePermPostgres) GetRoleByUserId(userId int) (*model.Role, error) {
+	var role model.Role
+	row := r.db.QueryRow("SELECT roles.id, roles.name FROM roles JOIN user_role ON roles.id = user_role.role_id AND user_role.user_id = $1", userId)
+	if err := row.Scan(&role.ID, &role.Name); err != nil {
 		r.logger.Errorf("GetRoleByUserId: error while scanning for roleId:%s", err)
-		return 0, fmt.Errorf("getRoleByUserId: error while scanning for roleId:%w", err)
+		return nil, fmt.Errorf("getRoleByUserId: error while scanning for roleId:%w", err)
 	}
-	return roleId, nil
+	return &role, nil
 }

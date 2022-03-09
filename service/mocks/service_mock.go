@@ -238,10 +238,10 @@ func (mr *MockRolePermMockRecorder) GetRoleById(id interface{}) *gomock.Call {
 }
 
 // GetRoleByUserId mocks base method.
-func (m *MockRolePerm) GetRoleByUserId(userId int) (int, error) {
+func (m *MockRolePerm) GetRoleByUserId(userId int) (*model.Role, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetRoleByUserId", userId)
-	ret0, _ := ret[0].(int)
+	ret0, _ := ret[0].(*model.Role)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

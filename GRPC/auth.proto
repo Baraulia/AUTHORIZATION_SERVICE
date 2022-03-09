@@ -32,7 +32,7 @@ message GeneratedTokens {
 
 message User {
   int32 userId = 1;
-  int32 roleId = 2;
+  string role = 2;
 }
 
 message ResultBinding {
