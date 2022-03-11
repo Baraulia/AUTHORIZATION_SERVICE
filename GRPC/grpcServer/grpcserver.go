@@ -48,19 +48,10 @@ func (g *GRPCServer) TokenGenerationByRefresh(ctx context.Context, token *authPr
 	return g.service.RefreshTokens(token.RefreshToken)
 }
 func (g *GRPCServer) TokenGenerationByUserId(ctx context.Context, user *authProto.User) (*authProto.GeneratedTokens, error) {
-	if user.Role == "" {
-		role, err := g.service.GetRoleByUserId(int(user.UserId))
-		if err != nil {
-			logger.Errorf("GetRoleByUserId:%s", err)
-			return nil, fmt.Errorf("GetRoleByUserId:%w", err)
-		}
-		user.Role = role.Name
-	} else {
-		_, err := g.service.AddRoleToUser(user)
-		if err != nil {
-			logger.Errorf("BindUserWithRole:%s", err)
-			return nil, fmt.Errorf("BindUserWithRole:%w", err)
-		}
+	_, err := g.service.AddRoleToUser(user)
+	if err != nil {
+		logger.Errorf("BindUserWithRole:%s", err)
+		return nil, fmt.Errorf("BindUserWithRole:%w", err)
 	}
 	return g.service.GenerateTokensByAuthUser(user)
 }
