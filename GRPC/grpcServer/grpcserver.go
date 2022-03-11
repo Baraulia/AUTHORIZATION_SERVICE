@@ -2,7 +2,6 @@ package grpcServer
 
 import (
 	"context"
-	"fmt"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"net"
@@ -48,10 +47,5 @@ func (g *GRPCServer) TokenGenerationByRefresh(ctx context.Context, token *authPr
 	return g.service.RefreshTokens(token.RefreshToken)
 }
 func (g *GRPCServer) TokenGenerationByUserId(ctx context.Context, user *authProto.User) (*authProto.GeneratedTokens, error) {
-	_, err := g.service.AddRoleToUser(user)
-	if err != nil {
-		logger.Errorf("BindUserWithRole:%s", err)
-		return nil, fmt.Errorf("BindUserWithRole:%w", err)
-	}
 	return g.service.GenerateTokensByAuthUser(user)
 }
