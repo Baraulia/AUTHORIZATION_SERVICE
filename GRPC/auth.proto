@@ -9,9 +9,6 @@ service Auth {
   rpc BindUserAndRole(User) returns (ResultBinding) {}
   rpc TokenGenerationByRefresh(RefreshToken) returns (GeneratedTokens) {}
   rpc TokenGenerationByUserId(User) returns (GeneratedTokens) {}
-}
-
-service Role {
   rpc GetAllRoles(Request) returns (Roles) {}
 }
 
