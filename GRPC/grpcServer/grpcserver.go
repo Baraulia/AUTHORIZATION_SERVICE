@@ -17,7 +17,6 @@ var logger = logging.GetLogger()
 type GRPCServer struct {
 	service *service.Service
 	authProto.UnimplementedAuthServer
-	authProto.UnimplementedRoleServer
 }
 
 func NewGRPCServer(service *service.Service) {
