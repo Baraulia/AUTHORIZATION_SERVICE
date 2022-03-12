@@ -2,12 +2,14 @@ package grpcServer
 
 import (
 	"context"
+	"fmt"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"net"
 	authProto "stlab.itechart-group.com/go/food_delivery/authorization_service/GRPC"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/pkg/logging"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/service"
+	"strings"
 )
 
 var logger = logging.GetLogger()
@@ -15,6 +17,7 @@ var logger = logging.GetLogger()
 type GRPCServer struct {
 	service *service.Service
 	authProto.UnimplementedAuthServer
+	authProto.UnimplementedRoleServer
 }
 
 func NewGRPCServer(service *service.Service) {
@@ -46,6 +49,19 @@ func (g *GRPCServer) BindUserAndRole(ctx context.Context, user *authProto.User) 
 func (g *GRPCServer) TokenGenerationByRefresh(ctx context.Context, token *authProto.RefreshToken) (*authProto.GeneratedTokens, error) {
 	return g.service.RefreshTokens(token.RefreshToken)
 }
+
 func (g *GRPCServer) TokenGenerationByUserId(ctx context.Context, user *authProto.User) (*authProto.GeneratedTokens, error) {
 	return g.service.GenerateTokensByAuthUser(user)
+}
+
+func (g *GRPCServer) GetAllRoles(context.Context, *authProto.Request) (*authProto.Roles, error) {
+	roles, err := g.service.GetAllRoles()
+	if err != nil {
+		return nil, fmt.Errorf("GetAllRoles: %w", err)
+	}
+	var sliceRoles []string
+	for _, role := range roles {
+		sliceRoles = append(sliceRoles, role.Name)
+	}
+	return &authProto.Roles{Roles: strings.Join(sliceRoles[:], ",")}, nil
 }

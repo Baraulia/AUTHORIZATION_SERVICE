@@ -11,6 +11,10 @@ service Auth {
   rpc TokenGenerationByUserId(User) returns (GeneratedTokens) {}
 }
 
+service Role {
+  rpc GetAllRoles(Request) returns (Roles) {}
+}
+
 message UserRole {
   int32 userId = 1;
   string role = 2;
@@ -37,4 +41,10 @@ message User {
 
 message ResultBinding {
   bool result = 1;
+}
+
+message Request {}
+
+message Roles {
+  string roles = 1;
 }
