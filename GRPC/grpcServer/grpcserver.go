@@ -3,6 +3,7 @@ package grpcServer
 import (
 	"context"
 	"fmt"
+	"github.com/golang/protobuf/ptypes/empty"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"net"
@@ -53,7 +54,7 @@ func (g *GRPCServer) TokenGenerationByUserId(ctx context.Context, user *authProt
 	return g.service.GenerateTokensByAuthUser(user)
 }
 
-func (g *GRPCServer) GetAllRoles(context.Context, *authProto.Request) (*authProto.Roles, error) {
+func (g *GRPCServer) GetAllRoles(context.Context, *empty.Empty) (*authProto.Roles, error) {
 	roles, err := g.service.GetAllRoles()
 	if err != nil {
 		return nil, fmt.Errorf("GetAllRoles: %w", err)
