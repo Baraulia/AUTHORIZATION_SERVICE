@@ -7,6 +7,7 @@ package mock_service
 import (
 	reflect "reflect"
 
+	gin "github.com/gin-gonic/gin"
 	gomock "github.com/golang/mock/gomock"
 	authProto "stlab.itechart-group.com/go/food_delivery/authorization_service/GRPC"
 	model "stlab.itechart-group.com/go/food_delivery/authorization_service/model"
@@ -35,19 +36,18 @@ func (m *MockAuthorization) EXPECT() *MockAuthorizationMockRecorder {
 	return m.recorder
 }
 
-// CheckRights mocks base method.
-func (m *MockAuthorization) CheckRights(token, requiredRole string) (bool, error) {
+// CheckRoleRights mocks base method.
+func (m *MockAuthorization) CheckRoleRights(perms []string, role string, ctx *gin.Context) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CheckRights", token, requiredRole)
-	ret0, _ := ret[0].(bool)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret := m.ctrl.Call(m, "CheckRoleRights", perms, role, ctx)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-// CheckRights indicates an expected call of CheckRights.
-func (mr *MockAuthorizationMockRecorder) CheckRights(token, requiredRole interface{}) *gomock.Call {
+// CheckRoleRights indicates an expected call of CheckRoleRights.
+func (mr *MockAuthorizationMockRecorder) CheckRoleRights(perms, role, ctx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckRights", reflect.TypeOf((*MockAuthorization)(nil).CheckRights), token, requiredRole)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckRoleRights", reflect.TypeOf((*MockAuthorization)(nil).CheckRoleRights), perms, role, ctx)
 }
 
 // GenerateTokensByAuthUser mocks base method.

@@ -24,9 +24,11 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	router.Use(
 		h.CorsMiddleware,
 	)
+
 	router.GET("/refresh", h.refreshToken)
 
 	role := router.Group("/roles")
+	role.Use(h.userIdentity)
 	{
 		role.POST("/", h.createRole)
 		role.GET("/:id", h.getRoleById)
@@ -35,6 +37,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		role.POST("/:id/perms", h.bindRoleWithPerms)
 	}
 	perm := router.Group("/perms")
+	perm.Use(h.userIdentity)
 	{
 		perm.POST("/", h.createPerm)
 		perm.GET("/", h.getAllPerms)

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/gin-gonic/gin"
 	authProto "stlab.itechart-group.com/go/food_delivery/authorization_service/GRPC"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/model"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/pkg/logging"
@@ -13,7 +14,7 @@ type Authorization interface {
 	GenerateTokensByAuthUser(user *authProto.User) (*authProto.GeneratedTokens, error)
 	ParseToken(token string) (*authProto.UserRole, error)
 	RefreshTokens(refreshToken string) (*authProto.GeneratedTokens, error)
-	CheckRights(token string, requiredRole string) (bool, error)
+	CheckRoleRights(perms []string, role string, ctx *gin.Context) error
 }
 
 type RolePerm interface {

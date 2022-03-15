@@ -25,12 +25,14 @@ func (h *Handler) userIdentity(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, model.ErrorResponse{Message: "token is empty"})
 		return
 	}
-	ok, err := h.services.Authorization.CheckRights(headerParts[1], "Superadmin")
-	if err != nil || !ok {
+	userPerms, err := h.services.Authorization.ParseToken(headerParts[1])
+	if err != nil {
+		h.logger.Errorf("userIdentity:%s", err)
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, model.ErrorResponse{Message: err.Error()})
 		return
 	}
-	ctx.Next()
+	ctx.Set("perms", userPerms.Permissions)
+	ctx.Set("role", userPerms.Role)
 }
 
 func (h *Handler) CorsMiddleware(ctx *gin.Context) {

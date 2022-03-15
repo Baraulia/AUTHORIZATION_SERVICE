@@ -16,15 +16,18 @@ import (
 
 // @title Authorization Service
 // @description Authorization Service for Food Delivery Application
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 func main() {
 	logger := logging.GetLogger()
 	db, err := database.NewPostgresDB(database.PostgresDB{
-		Host:     os.Getenv("HOST"),
-		Port:     os.Getenv("DB_PORT"),
-		Username: os.Getenv("DB_USER"),
-		Password: os.Getenv("DB_PASSWORD"),
-		DBName:   os.Getenv("DB_DATABASE"),
-		SSLMode:  os.Getenv("DB_SSL_MODE"),
+		Host:     "159.223.1.135",
+		Port:     "5433",
+		Username: "authorizeteam1",
+		Password: "qwerty",
+		DBName:   "authorize_db",
+		SSLMode:  "disable",
 	})
 	if err != nil {
 		logger.Panicf("failed to initialize db:%s", err.Error())
@@ -34,10 +37,10 @@ func main() {
 	ser := service.NewService(rep, logger)
 	handlers := handler.NewHandler(ser, logger)
 
-	port := os.Getenv("API_SERVER_PORT")
+	port := "8080"
 	serv := new(server.Server)
 
-	service.Secret = os.Getenv("JWT_SECRET")
+	service.Secret = "ygKG2872@gk&GF26VDEWLsfret23#qw"
 
 	go func() {
 		err := serv.Run(port, handlers.InitRoutes())

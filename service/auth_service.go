@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 	authProto "stlab.itechart-group.com/go/food_delivery/authorization_service/GRPC"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/pkg/logging"
@@ -106,24 +107,36 @@ func (a *AuthService) RefreshTokens(refreshToken string) (*authProto.GeneratedTo
 	return a.GenerateTokensByAuthUser(&authProto.User{UserId: claims.UserId, Role: role.Name})
 }
 
-func (a *AuthService) CheckRights(token string, requiredRole string) (bool, error) {
-	userRole, err := a.ParseToken(token)
-	if err != nil {
-		return false, err
+func (a *AuthService) CheckRoleRights(perms []string, role string, ctx *gin.Context) error {
+	if perms != nil {
+		ok := true
+		for _, perm := range perms {
+			if !strings.Contains(ctx.GetString("perms"), perm) {
+				ok = false
+				return fmt.Errorf("not enough rights")
+			} else {
+				continue
+			}
+		}
+		if ok == true {
+			return nil
+		}
 	}
-	if userRole.Role != requiredRole {
-		return false, errors.New("no required rights")
+	if ctx.GetString("role") != role {
+		return fmt.Errorf("not enough rights")
 	}
-	return true, nil
+	return nil
 }
 
 func ParseGWTToken(token string) (*MyClaims, error) {
+	fmt.Println("!!!!!!Secret!!!!!!!!", Secret, token)
 	parseToken, err := jwt.ParseWithClaims(token, &MyClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid signing method")
 		}
 		return []byte(Secret), nil
 	})
+	fmt.Println("!!!!!!!!!", err)
 	if err != nil {
 		return nil, fmt.Errorf("ParseGWTToken:%w", err)
 	}

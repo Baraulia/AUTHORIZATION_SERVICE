@@ -8,6 +8,11 @@
     "paths": {
         "/perms/": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "gets all permissions",
                 "consumes": [
                     "application/json"
@@ -18,6 +23,7 @@
                 "tags": [
                     "permission"
                 ],
+                "summary": "getAllPerms",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -34,6 +40,11 @@
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "create new permission",
                 "consumes": [
                     "application/json"
@@ -44,6 +55,7 @@
                 "tags": [
                     "permission"
                 ],
+                "summary": "createPerm",
                 "parameters": [
                     {
                         "description": "Perm",
@@ -120,6 +132,11 @@
         },
         "/roles/": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "gets all roles",
                 "consumes": [
                     "application/json"
@@ -130,6 +147,7 @@
                 "tags": [
                     "roles"
                 ],
+                "summary": "getAllRoles",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -146,6 +164,11 @@
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "create new role",
                 "consumes": [
                     "application/json"
@@ -156,6 +179,7 @@
                 "tags": [
                     "roles"
                 ],
+                "summary": "createRole",
                 "parameters": [
                     {
                         "description": "Role",
@@ -194,6 +218,11 @@
         },
         "/roles/{id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "get role by id",
                 "consumes": [
                     "application/json"
@@ -204,6 +233,7 @@
                 "tags": [
                     "roles"
                 ],
+                "summary": "getRoleById",
                 "parameters": [
                     {
                         "type": "integer",
@@ -237,6 +267,11 @@
         },
         "/roles/{id}/perms": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "get permissions bound with role",
                 "consumes": [
                     "application/json"
@@ -247,6 +282,7 @@
                 "tags": [
                     "roles"
                 ],
+                "summary": "getPermsByRoleId",
                 "parameters": [
                     {
                         "type": "integer",
@@ -279,6 +315,11 @@
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "binding role with permissions",
                 "consumes": [
                     "application/json"
@@ -289,6 +330,7 @@
                 "tags": [
                     "roles"
                 ],
+                "summary": "bindRoleWithPerms",
                 "parameters": [
                     {
                         "description": "Role and Perms",
@@ -413,6 +455,13 @@
                     "type": "string"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }

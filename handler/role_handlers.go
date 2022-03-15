@@ -8,7 +8,7 @@ import (
 )
 
 // @Summary getRoleById
-
+// @Security ApiKeyAuth
 // @Tags roles
 // @Description get role by id
 // @Accept  json
@@ -19,9 +19,15 @@ import (
 // @Failure 500 {object} model.ErrorResponse
 // @Router /roles/{id} [get]
 func (h *Handler) getRoleById(ctx *gin.Context) {
+	necessaryRole := "Superadmin"
+	if err := h.services.CheckRoleRights(nil, necessaryRole, ctx); err != nil {
+		h.logger.Warnf("Handler getRoleById:not enough rights")
+		ctx.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "not enough rights"})
+		return
+	}
 	id, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
-		h.logger.Warnf("Handler getUser (reading param):%s", err)
+		h.logger.Warnf("Handler getRoleById (reading param):%s", err)
 		ctx.JSON(http.StatusBadRequest, model.ErrorResponse{Message: "invalid request"})
 		return
 	}
@@ -34,7 +40,7 @@ func (h *Handler) getRoleById(ctx *gin.Context) {
 }
 
 // @Summary createRole
-
+// @Security ApiKeyAuth
 // @Tags roles
 // @Description create new role
 // @Accept  json
@@ -45,6 +51,12 @@ func (h *Handler) getRoleById(ctx *gin.Context) {
 // @Failure 500 {object} model.ErrorResponse
 // @Router /roles/ [post]
 func (h *Handler) createRole(ctx *gin.Context) {
+	necessaryRole := "Superadmin"
+	if err := h.services.CheckRoleRights(nil, necessaryRole, ctx); err != nil {
+		h.logger.Warnf("Handler getRoleById:not enough rights")
+		ctx.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "not enough rights"})
+		return
+	}
 	var input model.CreateRole
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		h.logger.Warnf("Handler createRole (binding JSON):%s", err)
@@ -62,7 +74,7 @@ func (h *Handler) createRole(ctx *gin.Context) {
 }
 
 // @Summary bindRoleWithPerms
-
+// @Security ApiKeyAuth
 // @Tags roles
 // @Description binding role with permissions
 // @Accept  json
@@ -73,6 +85,12 @@ func (h *Handler) createRole(ctx *gin.Context) {
 // @Failure 500 {object} model.ErrorResponse
 // @Router /roles/{id}/perms [post]
 func (h *Handler) bindRoleWithPerms(ctx *gin.Context) {
+	necessaryRole := "Superadmin"
+	if err := h.services.CheckRoleRights(nil, necessaryRole, ctx); err != nil {
+		h.logger.Warnf("Handler getRoleById:not enough rights")
+		ctx.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "not enough rights"})
+		return
+	}
 	var input model.BindRoleWithPermission
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		h.logger.Warnf("Handler BindRoleWithPerms (binding JSON):%s", err)
@@ -88,7 +106,7 @@ func (h *Handler) bindRoleWithPerms(ctx *gin.Context) {
 }
 
 // @Summary getAllRoles
-
+// @Security ApiKeyAuth
 // @Tags roles
 // @Description gets all roles
 // @Accept  json
@@ -97,6 +115,12 @@ func (h *Handler) bindRoleWithPerms(ctx *gin.Context) {
 // @Failure 500 {object} model.ErrorResponse
 // @Router /roles/ [get]
 func (h *Handler) getAllRoles(ctx *gin.Context) {
+	necessaryRole := "Superadmin"
+	if err := h.services.CheckRoleRights(nil, necessaryRole, ctx); err != nil {
+		h.logger.Warnf("Handler getRoleById:not enough rights")
+		ctx.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "not enough rights"})
+		return
+	}
 	roles, err := h.services.RolePerm.GetAllRoles()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
@@ -106,7 +130,7 @@ func (h *Handler) getAllRoles(ctx *gin.Context) {
 }
 
 // @Summary getPermsByRoleId
-
+// @Security ApiKeyAuth
 // @Tags roles
 // @Description get permissions bound with role
 // @Accept  json
@@ -117,6 +141,12 @@ func (h *Handler) getAllRoles(ctx *gin.Context) {
 // @Failure 500 {object} model.ErrorResponse
 // @Router /roles/{id}/perms [get]
 func (h *Handler) getPermsByRoleId(ctx *gin.Context) {
+	necessaryRole := "Superadmin"
+	if err := h.services.CheckRoleRights(nil, necessaryRole, ctx); err != nil {
+		h.logger.Warnf("Handler getRoleById:not enough rights")
+		ctx.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "not enough rights"})
+		return
+	}
 	id, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
 		h.logger.Warnf("Handler getPermsByRoleId (reading param):%s", err)
