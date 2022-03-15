@@ -83,8 +83,7 @@ jobs:
             export JWT_SECRET=${{ secrets.JWT_SECRET }}
             # Run a new container from a new image
             docker run -e AUTH_SERVER_URL -e DB_PORT -e DB_USER -e DB_PASSWORD -e HOST -e DB_DATABASE \
-            -e DB_SSL_MODE -e API_SERVER_PORT -e JWT_SECRET \
-            -d --restart always \
+            -e DB_SSL_MODE -e API_SERVER_PORT -e JWT_SECRET -d --restart always \
             --publish 8082:8080 \
             --publish 8090:8090 \
             --name $(echo $CONTAINER_NAME) \
