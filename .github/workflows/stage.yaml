@@ -79,8 +79,9 @@ jobs:
             export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
             export DB_DATABASE=${{ secrets.DB_DATABASE }}
             export DB_SSL_MODE=${{ secrets.DB_SSL_MODE }}
-            export API_SERVER_PORT=${{ secrets.API_SERVER_PORT }}
             export TOKEN_SEC=${{ secrets.TOKEN_SEC }}
+            export API_SERVER_PORT=${{ secrets.API_SERVER_PORT }}
+            
             # Run a new container from a new image
             docker run -e AUTH_SERVER_URL -e DB_PORT -e DB_USER -e DB_PASSWORD -e HOST -e DB_DATABASE \
             -e TOKEN_SEC -e DB_SSL_MODE -e API_SERVER_PORT -d --restart always \
