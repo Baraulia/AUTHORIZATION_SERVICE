@@ -22,12 +22,12 @@ import (
 func main() {
 	logger := logging.GetLogger()
 	db, err := database.NewPostgresDB(database.PostgresDB{
-		Host:     "159.223.1.135",
-		Port:     "5433",
-		Username: "authorizeteam1",
-		Password: "qwerty",
-		DBName:   "authorize_db",
-		SSLMode:  "disable",
+		Host:     os.Getenv("HOST"),
+		Port:     os.Getenv("DB_PORT"),
+		Username: os.Getenv("DB_USER"),
+		Password: os.Getenv("DB_PASSWORD"),
+		DBName:   os.Getenv("DB_DATABASE"),
+		SSLMode:  os.Getenv("DB_SSL_MODE"),
 	})
 	if err != nil {
 		logger.Panicf("failed to initialize db:%s", err.Error())
@@ -37,10 +37,10 @@ func main() {
 	ser := service.NewService(rep, logger)
 	handlers := handler.NewHandler(ser, logger)
 
-	port := "8080"
+	port := os.Getenv("API_SERVER_PORT")
 	serv := new(server.Server)
 
-	service.Secret = "ygKG2872@gk&GF26VDEWLsfret23#qw"
+	service.Secret = os.Getenv("TOKEN_SEC")
 
 	go func() {
 		err := serv.Run(port, handlers.InitRoutes())
