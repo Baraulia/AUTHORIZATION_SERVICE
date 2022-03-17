@@ -19,7 +19,7 @@ import (
 // @Router /perms/ [post]
 func (h *Handler) createPerm(ctx *gin.Context) {
 	necessaryRole := "Superadmin"
-	if err := h.services.CheckRoleRights(nil, necessaryRole, ctx); err != nil {
+	if err := h.services.CheckRoleRights(nil, necessaryRole, ctx.GetString("perms"), ctx.GetString("role")); err != nil {
 		h.logger.Warnf("Handler getRoleById:not enough rights")
 		ctx.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "not enough rights"})
 		return
@@ -51,7 +51,7 @@ func (h *Handler) createPerm(ctx *gin.Context) {
 // @Router /perms/ [get]
 func (h *Handler) getAllPerms(ctx *gin.Context) {
 	necessaryRole := "Superadmin"
-	if err := h.services.CheckRoleRights(nil, necessaryRole, ctx); err != nil {
+	if err := h.services.CheckRoleRights(nil, necessaryRole, ctx.GetString("perms"), ctx.GetString("role")); err != nil {
 		h.logger.Warnf("Handler getRoleById:not enough rights")
 		ctx.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "not enough rights"})
 		return

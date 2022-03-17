@@ -3,7 +3,6 @@ package service
 import (
 	"errors"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 	authProto "stlab.itechart-group.com/go/food_delivery/authorization_service/GRPC"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/pkg/logging"
@@ -107,11 +106,11 @@ func (a *AuthService) RefreshTokens(refreshToken string) (*authProto.GeneratedTo
 	return a.GenerateTokensByAuthUser(&authProto.User{UserId: claims.UserId, Role: role.Name})
 }
 
-func (a *AuthService) CheckRoleRights(perms []string, role string, ctx *gin.Context) error {
-	if perms != nil {
+func (a *AuthService) CheckRoleRights(neededPerms []string, neededRole string, givenPerms string, givenRole string) error {
+	if neededPerms != nil {
 		ok := true
-		for _, perm := range perms {
-			if !strings.Contains(ctx.GetString("perms"), perm) {
+		for _, perm := range neededPerms {
+			if !strings.Contains(givenPerms, perm) {
 				ok = false
 				return fmt.Errorf("not enough rights")
 			} else {
@@ -122,7 +121,7 @@ func (a *AuthService) CheckRoleRights(perms []string, role string, ctx *gin.Cont
 			return nil
 		}
 	}
-	if ctx.GetString("role") != role {
+	if givenRole != neededRole {
 		return fmt.Errorf("not enough rights")
 	}
 	return nil
