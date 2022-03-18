@@ -27,7 +27,7 @@ func TestHandler_refreshToken(t *testing.T) {
 	}{
 		{
 			name:        "OK",
-			headerName:  "Refresh",
+			headerName:  "refresh_token",
 			headerValue: "token",
 			token:       "token",
 			mockBehavior: func(s *mock_service.MockAuthorization, token string) {
@@ -41,7 +41,7 @@ func TestHandler_refreshToken(t *testing.T) {
 		},
 		{
 			name:                "Empty refresh header",
-			headerName:          "Refresh",
+			headerName:          "refresh_token",
 			headerValue:         "",
 			token:               "",
 			mockBehavior:        func(s *mock_service.MockAuthorization, token string) {},
@@ -50,7 +50,7 @@ func TestHandler_refreshToken(t *testing.T) {
 		},
 		{
 			name:        "Invalid refresh token",
-			headerName:  "Refresh",
+			headerName:  "refresh_token",
 			headerValue: "token",
 			token:       "token",
 			mockBehavior: func(s *mock_service.MockAuthorization, token string) {
