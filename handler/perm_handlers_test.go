@@ -7,6 +7,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"net/http/httptest"
+	authProto "stlab.itechart-group.com/go/food_delivery/authorization_service/GRPC"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/model"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/pkg/logging"
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/service"
@@ -15,20 +16,40 @@ import (
 )
 
 func TestHandler_getPermsByRoleId(t *testing.T) {
+	type mockBehaviorCheck func(s *mock_service.MockAuthorization, perms, role string)
+	type mockBehaviorParseToken func(s *mock_service.MockAuthorization, token string)
 	type mockBehavior func(s *mock_service.MockRolePerm, id int)
 
 	testTable := []struct {
-		name                string
-		input               string
-		id                  int
-		mockBehavior        mockBehavior
-		expectedStatusCode  int
-		expectedRequestBody string
+		name                   string
+		input                  string
+		id                     int
+		inputPerms             string
+		inputRole              string
+		inputToken             string
+		mockBehaviorParseToken mockBehaviorParseToken
+		mockBehavior           mockBehavior
+		mockBehaviorCheck      mockBehaviorCheck
+		expectedStatusCode     int
+		expectedRequestBody    string
 	}{
 		{
-			name:  "OK",
-			input: "1",
-			id:    1,
+			name:       "OK",
+			input:      "1",
+			id:         1,
+			inputPerms: "",
+			inputRole:  "Superadmin",
+			inputToken: "testToken",
+			mockBehaviorParseToken: func(s *mock_service.MockAuthorization, token string) {
+				s.EXPECT().ParseToken(token).Return(&authProto.UserRole{
+					UserId:      1,
+					Role:        "Superadmin",
+					Permissions: "",
+				}, nil)
+			},
+			mockBehaviorCheck: func(s *mock_service.MockAuthorization, perms, role string) {
+				s.EXPECT().CheckRoleRights(nil, "Superadmin", perms, role).Return(nil)
+			},
 			mockBehavior: func(s *mock_service.MockRolePerm, id int) {
 				s.EXPECT().GetPermsByRoleId(id).Return([]model.Permission{
 					{
@@ -71,19 +92,22 @@ func TestHandler_getPermsByRoleId(t *testing.T) {
 			c := gomock.NewController(t)
 			defer c.Finish()
 			getPerm := mock_service.NewMockRolePerm(c)
+			auth := mock_service.NewMockAuthorization(c)
+			testCase.mockBehaviorParseToken(auth, testCase.inputToken)
+			testCase.mockBehaviorCheck(auth, testCase.inputPerms, testCase.inputRole)
 			testCase.mockBehavior(getPerm, testCase.id)
 			logger := logging.GetLogger()
 			services := &service.Service{RolePerm: getPerm}
 			handler := NewHandler(services, logger)
 
 			//Init server
-			r := gin.New()
-			r.GET("/roles/:id/perms", handler.getPermsByRoleId)
+			r := handler.InitRoutes()
 
 			//Test request
 			w := httptest.NewRecorder()
 
 			req := httptest.NewRequest("GET", fmt.Sprintf("/roles/%s/perms", testCase.input), nil)
+			req.Header.Set("Authorization", "Bearer testToken")
 
 			//Execute the request
 			r.ServeHTTP(w, req)

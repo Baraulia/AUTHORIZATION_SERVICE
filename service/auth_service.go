@@ -128,14 +128,12 @@ func (a *AuthService) CheckRoleRights(neededPerms []string, neededRole string, g
 }
 
 func ParseGWTToken(token string) (*MyClaims, error) {
-	fmt.Println("!!!!!!Secret!!!!!!!!", Secret, token)
 	parseToken, err := jwt.ParseWithClaims(token, &MyClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid signing method")
 		}
 		return []byte(Secret), nil
 	})
-	fmt.Println("!!!!!!!!!", err)
 	if err != nil {
 		return nil, fmt.Errorf("ParseGWTToken:%w", err)
 	}

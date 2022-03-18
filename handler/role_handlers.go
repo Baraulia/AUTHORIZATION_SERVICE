@@ -142,7 +142,7 @@ func (h *Handler) getAllRoles(ctx *gin.Context) {
 // @Router /roles/{id}/perms [get]
 func (h *Handler) getPermsByRoleId(ctx *gin.Context) {
 	necessaryRole := "Superadmin"
-	if err := h.services.CheckRoleRights(nil, necessaryRole, ctx.GetString("perms"), ctx.GetString("role")); err != nil {
+	if err := h.services.Authorization.CheckRoleRights(nil, necessaryRole, ctx.GetString("perms"), ctx.GetString("role")); err != nil {
 		h.logger.Warnf("Handler getRoleById:not enough rights")
 		ctx.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "not enough rights"})
 		return
