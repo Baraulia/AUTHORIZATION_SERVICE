@@ -7,53 +7,53 @@ import (
 	"stlab.itechart-group.com/go/food_delivery/authorization_service/repository"
 )
 
-type RolePermService struct {
+type AuthUserService struct {
 	logger logging.Logger
 	repo   repository.Repository
 }
 
-func NewRolePermService(repo repository.Repository, logger logging.Logger) *RolePermService {
-	return &RolePermService{repo: repo, logger: logger}
+func NewAuthUserService(repo repository.Repository, logger logging.Logger) *AuthUserService {
+	return &AuthUserService{repo: repo, logger: logger}
 }
 
-func (s *RolePermService) GetRoleById(id int) (*model.Role, error) {
-	return s.repo.RolePerm.GetRoleById(id)
+func (a *AuthUserService) GetRoleById(id int) (*model.Role, error) {
+	return a.repo.RolePerm.GetRoleById(id)
 }
 
-func (s *RolePermService) GetRoleByUserId(userId int) (*model.Role, error) {
-	return s.repo.RolePerm.GetRoleByUserId(userId)
+func (a *AuthUserService) GetRoleByUserId(userId int) (*model.Role, error) {
+	return a.repo.RolePerm.GetRoleByUserId(userId)
 }
 
-func (s *RolePermService) GetAllRoles() ([]model.Role, error) {
-	return s.repo.GetAllRoles()
+func (a *AuthUserService) GetAllRoles() ([]model.Role, error) {
+	return a.repo.GetAllRoles()
 }
 
-func (s *RolePermService) CreateRole(role string) (int, error) {
-	return s.repo.RolePerm.CreateRole(role)
+func (a *AuthUserService) CreateRole(role string) (int, error) {
+	return a.repo.RolePerm.CreateRole(role)
 }
 
-func (s *RolePermService) BindRoleWithPerms(rp *model.BindRoleWithPermission) error {
-	err := s.repo.RolePerm.BindRoleWithPerms(rp)
+func (a *AuthUserService) BindRoleWithPerms(rp *model.BindRoleWithPermission) error {
+	err := a.repo.RolePerm.BindRoleWithPerms(rp)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (s *RolePermService) GetPermsByRoleId(id int) ([]model.Permission, error) {
-	return s.repo.RolePerm.GetPermsByRoleId(id)
+func (a *AuthUserService) GetPermsByRoleId(id int) ([]model.Permission, error) {
+	return a.repo.RolePerm.GetPermsByRoleId(id)
 }
 
-func (s *RolePermService) CreatePermission(permission string) (int, error) {
-	return s.repo.RolePerm.CreatePermission(permission)
+func (a *AuthUserService) CreatePermission(permission string) (int, error) {
+	return a.repo.RolePerm.CreatePermission(permission)
 }
 
-func (s *RolePermService) GetAllPerms() ([]model.Permission, error) {
-	return s.repo.RolePerm.GetAllPerms()
+func (a *AuthUserService) GetAllPerms() ([]model.Permission, error) {
+	return a.repo.RolePerm.GetAllPerms()
 }
 
-func (s *RolePermService) AddRoleToUser(user *authProto.User) (bool, error) {
-	err := s.repo.AddRoleToUser(user)
+func (a *AuthUserService) AddRoleToUser(user *authProto.User) (bool, error) {
+	err := a.repo.AddRoleToUser(user)
 	if err != nil {
 		return false, err
 	}

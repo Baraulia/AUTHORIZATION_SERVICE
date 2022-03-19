@@ -31,7 +31,7 @@ func (h *Handler) getRoleById(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, model.ErrorResponse{Message: "invalid request"})
 		return
 	}
-	role, err := h.services.RolePerm.GetRoleById(id)
+	role, err := h.services.AuthUser.GetRoleById(id)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
 		return
@@ -63,7 +63,7 @@ func (h *Handler) createRole(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, model.ErrorResponse{Message: "invalid request"})
 		return
 	}
-	roleId, err := h.services.RolePerm.CreateRole(input.Name)
+	roleId, err := h.services.AuthUser.CreateRole(input.Name)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
 		return
@@ -97,7 +97,7 @@ func (h *Handler) bindRoleWithPerms(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, model.ErrorResponse{Message: "invalid request"})
 		return
 	}
-	err := h.services.RolePerm.BindRoleWithPerms(&input)
+	err := h.services.AuthUser.BindRoleWithPerms(&input)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
 		return
@@ -121,7 +121,7 @@ func (h *Handler) getAllRoles(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "not enough rights"})
 		return
 	}
-	roles, err := h.services.RolePerm.GetAllRoles()
+	roles, err := h.services.AuthUser.GetAllRoles()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
 		return
@@ -142,7 +142,7 @@ func (h *Handler) getAllRoles(ctx *gin.Context) {
 // @Router /roles/{id}/perms [get]
 func (h *Handler) getPermsByRoleId(ctx *gin.Context) {
 	necessaryRole := "Superadmin"
-	if err := h.services.Authorization.CheckRoleRights(nil, necessaryRole, ctx.GetString("perms"), ctx.GetString("role")); err != nil {
+	if err := h.services.AuthUser.CheckRoleRights(nil, necessaryRole, ctx.GetString("perms"), ctx.GetString("role")); err != nil {
 		h.logger.Warnf("Handler getRoleById:not enough rights")
 		ctx.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "not enough rights"})
 		return
@@ -153,7 +153,7 @@ func (h *Handler) getPermsByRoleId(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, model.ErrorResponse{Message: "invalid request"})
 		return
 	}
-	perms, err := h.services.RolePerm.GetPermsByRoleId(id)
+	perms, err := h.services.AuthUser.GetPermsByRoleId(id)
 	if err != nil {
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})

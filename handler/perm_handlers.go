@@ -30,7 +30,7 @@ func (h *Handler) createPerm(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, model.ErrorResponse{Message: "invalid request"})
 		return
 	}
-	permId, err := h.services.RolePerm.CreatePermission(input.Name)
+	permId, err := h.services.AuthUser.CreatePermission(input.Name)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
 		return
@@ -56,7 +56,7 @@ func (h *Handler) getAllPerms(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "not enough rights"})
 		return
 	}
-	perms, err := h.services.RolePerm.GetAllPerms()
+	perms, err := h.services.AuthUser.GetAllPerms()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
 		return

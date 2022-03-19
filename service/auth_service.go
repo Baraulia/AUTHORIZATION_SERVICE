@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"github.com/golang-jwt/jwt"
 	authProto "stlab.itechart-group.com/go/food_delivery/authorization_service/GRPC"
-	"stlab.itechart-group.com/go/food_delivery/authorization_service/pkg/logging"
-	"stlab.itechart-group.com/go/food_delivery/authorization_service/repository"
 	"strings"
 	"time"
 )
@@ -16,22 +14,13 @@ var Secret string
 const AccessTokenTTL = time.Minute * 15
 const RefreshTokenTTL = time.Hour * 24 * 30
 
-type AuthService struct {
-	logger logging.Logger
-	repo   repository.Repository
-}
-
-func NewAuthService(repo repository.Repository, logger logging.Logger) *AuthService {
-	return &AuthService{repo: repo, logger: logger}
-}
-
 type MyClaims struct {
 	UserId int32
 	Role   string
 	jwt.StandardClaims
 }
 
-func (a *AuthService) GenerateTokensByAuthUser(user *authProto.User) (*authProto.GeneratedTokens, error) {
+func (a *AuthUserService) GenerateTokensByAuthUser(user *authProto.User) (*authProto.GeneratedTokens, error) {
 	expired := time.Now().Add(AccessTokenTTL)
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, MyClaims{
 		UserId:         user.UserId,
@@ -63,7 +52,7 @@ func (a *AuthService) GenerateTokensByAuthUser(user *authProto.User) (*authProto
 
 }
 
-func (a *AuthService) ParseToken(token string) (*authProto.UserRole, error) {
+func (a *AuthUserService) ParseToken(token string) (*authProto.UserRole, error) {
 	claims, err := ParseGWTToken(token)
 	if err != nil {
 		return nil, err
@@ -91,7 +80,7 @@ func (a *AuthService) ParseToken(token string) (*authProto.UserRole, error) {
 	}, nil
 }
 
-func (a *AuthService) RefreshTokens(refreshToken string) (*authProto.GeneratedTokens, error) {
+func (a *AuthUserService) RefreshTokens(refreshToken string) (*authProto.GeneratedTokens, error) {
 	claims, err := ParseGWTToken(refreshToken)
 	if err != nil {
 		return nil, err
@@ -106,7 +95,7 @@ func (a *AuthService) RefreshTokens(refreshToken string) (*authProto.GeneratedTo
 	return a.GenerateTokensByAuthUser(&authProto.User{UserId: claims.UserId, Role: role.Name})
 }
 
-func (a *AuthService) CheckRoleRights(neededPerms []string, neededRole string, givenPerms string, givenRole string) error {
+func (a *AuthUserService) CheckRoleRights(neededPerms []string, neededRole string, givenPerms string, givenRole string) error {
 	if neededPerms != nil {
 		ok := true
 		for _, perm := range neededPerms {

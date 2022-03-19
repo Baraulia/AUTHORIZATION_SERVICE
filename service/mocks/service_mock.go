@@ -12,113 +12,31 @@ import (
 	model "stlab.itechart-group.com/go/food_delivery/authorization_service/model"
 )
 
-// MockAuthorization is a mock of Authorization interface.
-type MockAuthorization struct {
+// MockAuthUser is a mock of AuthUser interface.
+type MockAuthUser struct {
 	ctrl     *gomock.Controller
-	recorder *MockAuthorizationMockRecorder
+	recorder *MockAuthUserMockRecorder
 }
 
-// MockAuthorizationMockRecorder is the mock recorder for MockAuthorization.
-type MockAuthorizationMockRecorder struct {
-	mock *MockAuthorization
+// MockAuthUserMockRecorder is the mock recorder for MockAuthUser.
+type MockAuthUserMockRecorder struct {
+	mock *MockAuthUser
 }
 
-// NewMockAuthorization creates a new mock instance.
-func NewMockAuthorization(ctrl *gomock.Controller) *MockAuthorization {
-	mock := &MockAuthorization{ctrl: ctrl}
-	mock.recorder = &MockAuthorizationMockRecorder{mock}
+// NewMockAuthUser creates a new mock instance.
+func NewMockAuthUser(ctrl *gomock.Controller) *MockAuthUser {
+	mock := &MockAuthUser{ctrl: ctrl}
+	mock.recorder = &MockAuthUserMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockAuthorization) EXPECT() *MockAuthorizationMockRecorder {
-	return m.recorder
-}
-
-// CheckRoleRights mocks base method.
-func (m *MockAuthorization) CheckRoleRights(neededPerms []string, neededRole, givenPerms, givenRole string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CheckRoleRights", neededPerms, neededRole, givenPerms, givenRole)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// CheckRoleRights indicates an expected call of CheckRoleRights.
-func (mr *MockAuthorizationMockRecorder) CheckRoleRights(neededPerms, neededRole, givenPerms, givenRole interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckRoleRights", reflect.TypeOf((*MockAuthorization)(nil).CheckRoleRights), neededPerms, neededRole, givenPerms, givenRole)
-}
-
-// GenerateTokensByAuthUser mocks base method.
-func (m *MockAuthorization) GenerateTokensByAuthUser(user *authProto.User) (*authProto.GeneratedTokens, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GenerateTokensByAuthUser", user)
-	ret0, _ := ret[0].(*authProto.GeneratedTokens)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GenerateTokensByAuthUser indicates an expected call of GenerateTokensByAuthUser.
-func (mr *MockAuthorizationMockRecorder) GenerateTokensByAuthUser(user interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateTokensByAuthUser", reflect.TypeOf((*MockAuthorization)(nil).GenerateTokensByAuthUser), user)
-}
-
-// ParseToken mocks base method.
-func (m *MockAuthorization) ParseToken(token string) (*authProto.UserRole, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ParseToken", token)
-	ret0, _ := ret[0].(*authProto.UserRole)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// ParseToken indicates an expected call of ParseToken.
-func (mr *MockAuthorizationMockRecorder) ParseToken(token interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ParseToken", reflect.TypeOf((*MockAuthorization)(nil).ParseToken), token)
-}
-
-// RefreshTokens mocks base method.
-func (m *MockAuthorization) RefreshTokens(refreshToken string) (*authProto.GeneratedTokens, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RefreshTokens", refreshToken)
-	ret0, _ := ret[0].(*authProto.GeneratedTokens)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// RefreshTokens indicates an expected call of RefreshTokens.
-func (mr *MockAuthorizationMockRecorder) RefreshTokens(refreshToken interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RefreshTokens", reflect.TypeOf((*MockAuthorization)(nil).RefreshTokens), refreshToken)
-}
-
-// MockRolePerm is a mock of RolePerm interface.
-type MockRolePerm struct {
-	ctrl     *gomock.Controller
-	recorder *MockRolePermMockRecorder
-}
-
-// MockRolePermMockRecorder is the mock recorder for MockRolePerm.
-type MockRolePermMockRecorder struct {
-	mock *MockRolePerm
-}
-
-// NewMockRolePerm creates a new mock instance.
-func NewMockRolePerm(ctrl *gomock.Controller) *MockRolePerm {
-	mock := &MockRolePerm{ctrl: ctrl}
-	mock.recorder = &MockRolePermMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockRolePerm) EXPECT() *MockRolePermMockRecorder {
+func (m *MockAuthUser) EXPECT() *MockAuthUserMockRecorder {
 	return m.recorder
 }
 
 // AddRoleToUser mocks base method.
-func (m *MockRolePerm) AddRoleToUser(user *authProto.User) (bool, error) {
+func (m *MockAuthUser) AddRoleToUser(user *authProto.User) (bool, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddRoleToUser", user)
 	ret0, _ := ret[0].(bool)
@@ -127,13 +45,13 @@ func (m *MockRolePerm) AddRoleToUser(user *authProto.User) (bool, error) {
 }
 
 // AddRoleToUser indicates an expected call of AddRoleToUser.
-func (mr *MockRolePermMockRecorder) AddRoleToUser(user interface{}) *gomock.Call {
+func (mr *MockAuthUserMockRecorder) AddRoleToUser(user interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddRoleToUser", reflect.TypeOf((*MockRolePerm)(nil).AddRoleToUser), user)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddRoleToUser", reflect.TypeOf((*MockAuthUser)(nil).AddRoleToUser), user)
 }
 
 // BindRoleWithPerms mocks base method.
-func (m *MockRolePerm) BindRoleWithPerms(rp *model.BindRoleWithPermission) error {
+func (m *MockAuthUser) BindRoleWithPerms(rp *model.BindRoleWithPermission) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "BindRoleWithPerms", rp)
 	ret0, _ := ret[0].(error)
@@ -141,13 +59,27 @@ func (m *MockRolePerm) BindRoleWithPerms(rp *model.BindRoleWithPermission) error
 }
 
 // BindRoleWithPerms indicates an expected call of BindRoleWithPerms.
-func (mr *MockRolePermMockRecorder) BindRoleWithPerms(rp interface{}) *gomock.Call {
+func (mr *MockAuthUserMockRecorder) BindRoleWithPerms(rp interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BindRoleWithPerms", reflect.TypeOf((*MockRolePerm)(nil).BindRoleWithPerms), rp)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BindRoleWithPerms", reflect.TypeOf((*MockAuthUser)(nil).BindRoleWithPerms), rp)
+}
+
+// CheckRoleRights mocks base method.
+func (m *MockAuthUser) CheckRoleRights(neededPerms []string, neededRole, givenPerms, givenRole string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CheckRoleRights", neededPerms, neededRole, givenPerms, givenRole)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CheckRoleRights indicates an expected call of CheckRoleRights.
+func (mr *MockAuthUserMockRecorder) CheckRoleRights(neededPerms, neededRole, givenPerms, givenRole interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckRoleRights", reflect.TypeOf((*MockAuthUser)(nil).CheckRoleRights), neededPerms, neededRole, givenPerms, givenRole)
 }
 
 // CreatePermission mocks base method.
-func (m *MockRolePerm) CreatePermission(permission string) (int, error) {
+func (m *MockAuthUser) CreatePermission(permission string) (int, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreatePermission", permission)
 	ret0, _ := ret[0].(int)
@@ -156,13 +88,13 @@ func (m *MockRolePerm) CreatePermission(permission string) (int, error) {
 }
 
 // CreatePermission indicates an expected call of CreatePermission.
-func (mr *MockRolePermMockRecorder) CreatePermission(permission interface{}) *gomock.Call {
+func (mr *MockAuthUserMockRecorder) CreatePermission(permission interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePermission", reflect.TypeOf((*MockRolePerm)(nil).CreatePermission), permission)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePermission", reflect.TypeOf((*MockAuthUser)(nil).CreatePermission), permission)
 }
 
 // CreateRole mocks base method.
-func (m *MockRolePerm) CreateRole(role string) (int, error) {
+func (m *MockAuthUser) CreateRole(role string) (int, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateRole", role)
 	ret0, _ := ret[0].(int)
@@ -171,13 +103,28 @@ func (m *MockRolePerm) CreateRole(role string) (int, error) {
 }
 
 // CreateRole indicates an expected call of CreateRole.
-func (mr *MockRolePermMockRecorder) CreateRole(role interface{}) *gomock.Call {
+func (mr *MockAuthUserMockRecorder) CreateRole(role interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateRole", reflect.TypeOf((*MockRolePerm)(nil).CreateRole), role)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateRole", reflect.TypeOf((*MockAuthUser)(nil).CreateRole), role)
+}
+
+// GenerateTokensByAuthUser mocks base method.
+func (m *MockAuthUser) GenerateTokensByAuthUser(user *authProto.User) (*authProto.GeneratedTokens, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GenerateTokensByAuthUser", user)
+	ret0, _ := ret[0].(*authProto.GeneratedTokens)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GenerateTokensByAuthUser indicates an expected call of GenerateTokensByAuthUser.
+func (mr *MockAuthUserMockRecorder) GenerateTokensByAuthUser(user interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateTokensByAuthUser", reflect.TypeOf((*MockAuthUser)(nil).GenerateTokensByAuthUser), user)
 }
 
 // GetAllPerms mocks base method.
-func (m *MockRolePerm) GetAllPerms() ([]model.Permission, error) {
+func (m *MockAuthUser) GetAllPerms() ([]model.Permission, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAllPerms")
 	ret0, _ := ret[0].([]model.Permission)
@@ -186,13 +133,13 @@ func (m *MockRolePerm) GetAllPerms() ([]model.Permission, error) {
 }
 
 // GetAllPerms indicates an expected call of GetAllPerms.
-func (mr *MockRolePermMockRecorder) GetAllPerms() *gomock.Call {
+func (mr *MockAuthUserMockRecorder) GetAllPerms() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllPerms", reflect.TypeOf((*MockRolePerm)(nil).GetAllPerms))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllPerms", reflect.TypeOf((*MockAuthUser)(nil).GetAllPerms))
 }
 
 // GetAllRoles mocks base method.
-func (m *MockRolePerm) GetAllRoles() ([]model.Role, error) {
+func (m *MockAuthUser) GetAllRoles() ([]model.Role, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAllRoles")
 	ret0, _ := ret[0].([]model.Role)
@@ -201,13 +148,13 @@ func (m *MockRolePerm) GetAllRoles() ([]model.Role, error) {
 }
 
 // GetAllRoles indicates an expected call of GetAllRoles.
-func (mr *MockRolePermMockRecorder) GetAllRoles() *gomock.Call {
+func (mr *MockAuthUserMockRecorder) GetAllRoles() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllRoles", reflect.TypeOf((*MockRolePerm)(nil).GetAllRoles))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllRoles", reflect.TypeOf((*MockAuthUser)(nil).GetAllRoles))
 }
 
 // GetPermsByRoleId mocks base method.
-func (m *MockRolePerm) GetPermsByRoleId(id int) ([]model.Permission, error) {
+func (m *MockAuthUser) GetPermsByRoleId(id int) ([]model.Permission, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetPermsByRoleId", id)
 	ret0, _ := ret[0].([]model.Permission)
@@ -216,13 +163,13 @@ func (m *MockRolePerm) GetPermsByRoleId(id int) ([]model.Permission, error) {
 }
 
 // GetPermsByRoleId indicates an expected call of GetPermsByRoleId.
-func (mr *MockRolePermMockRecorder) GetPermsByRoleId(id interface{}) *gomock.Call {
+func (mr *MockAuthUserMockRecorder) GetPermsByRoleId(id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPermsByRoleId", reflect.TypeOf((*MockRolePerm)(nil).GetPermsByRoleId), id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPermsByRoleId", reflect.TypeOf((*MockAuthUser)(nil).GetPermsByRoleId), id)
 }
 
 // GetRoleById mocks base method.
-func (m *MockRolePerm) GetRoleById(id int) (*model.Role, error) {
+func (m *MockAuthUser) GetRoleById(id int) (*model.Role, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetRoleById", id)
 	ret0, _ := ret[0].(*model.Role)
@@ -231,13 +178,13 @@ func (m *MockRolePerm) GetRoleById(id int) (*model.Role, error) {
 }
 
 // GetRoleById indicates an expected call of GetRoleById.
-func (mr *MockRolePermMockRecorder) GetRoleById(id interface{}) *gomock.Call {
+func (mr *MockAuthUserMockRecorder) GetRoleById(id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRoleById", reflect.TypeOf((*MockRolePerm)(nil).GetRoleById), id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRoleById", reflect.TypeOf((*MockAuthUser)(nil).GetRoleById), id)
 }
 
 // GetRoleByUserId mocks base method.
-func (m *MockRolePerm) GetRoleByUserId(userId int) (*model.Role, error) {
+func (m *MockAuthUser) GetRoleByUserId(userId int) (*model.Role, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetRoleByUserId", userId)
 	ret0, _ := ret[0].(*model.Role)
@@ -246,7 +193,37 @@ func (m *MockRolePerm) GetRoleByUserId(userId int) (*model.Role, error) {
 }
 
 // GetRoleByUserId indicates an expected call of GetRoleByUserId.
-func (mr *MockRolePermMockRecorder) GetRoleByUserId(userId interface{}) *gomock.Call {
+func (mr *MockAuthUserMockRecorder) GetRoleByUserId(userId interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRoleByUserId", reflect.TypeOf((*MockRolePerm)(nil).GetRoleByUserId), userId)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRoleByUserId", reflect.TypeOf((*MockAuthUser)(nil).GetRoleByUserId), userId)
+}
+
+// ParseToken mocks base method.
+func (m *MockAuthUser) ParseToken(token string) (*authProto.UserRole, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ParseToken", token)
+	ret0, _ := ret[0].(*authProto.UserRole)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ParseToken indicates an expected call of ParseToken.
+func (mr *MockAuthUserMockRecorder) ParseToken(token interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ParseToken", reflect.TypeOf((*MockAuthUser)(nil).ParseToken), token)
+}
+
+// RefreshTokens mocks base method.
+func (m *MockAuthUser) RefreshTokens(refreshToken string) (*authProto.GeneratedTokens, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RefreshTokens", refreshToken)
+	ret0, _ := ret[0].(*authProto.GeneratedTokens)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RefreshTokens indicates an expected call of RefreshTokens.
+func (mr *MockAuthUserMockRecorder) RefreshTokens(refreshToken interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RefreshTokens", reflect.TypeOf((*MockAuthUser)(nil).RefreshTokens), refreshToken)
 }

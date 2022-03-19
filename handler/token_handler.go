@@ -22,7 +22,7 @@ func (h *Handler) refreshToken(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, model.ErrorResponse{Message: "empty refresh header"})
 		return
 	}
-	tokens, err := h.services.Authorization.RefreshTokens(header)
+	tokens, err := h.services.AuthUser.RefreshTokens(header)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, model.ErrorResponse{Message: err.Error()})
 		return
