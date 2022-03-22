@@ -95,7 +95,15 @@ func (a *AuthUserService) RefreshTokens(refreshToken string) (*authProto.Generat
 	return a.GenerateTokensByAuthUser(&authProto.User{UserId: claims.UserId, Role: role.Name})
 }
 
-func (a *AuthUserService) CheckRoleRights(neededPerms []string, neededRole string, givenPerms string, givenRole string) error {
+func (a *AuthUserService) CheckRole(neededRoles []string, givenRole string) error {
+	neededRolesString := strings.Join(neededRoles, ",")
+	if !strings.Contains(neededRolesString, givenRole) {
+		return fmt.Errorf("not enough rights")
+	}
+	return nil
+}
+
+func (a *AuthUserService) CheckRights(neededPerms []string, givenPerms string) error {
 	if neededPerms != nil {
 		ok := true
 		for _, perm := range neededPerms {
@@ -109,9 +117,6 @@ func (a *AuthUserService) CheckRoleRights(neededPerms []string, neededRole strin
 		if ok == true {
 			return nil
 		}
-	}
-	if givenRole != neededRole {
-		return fmt.Errorf("not enough rights")
 	}
 	return nil
 }

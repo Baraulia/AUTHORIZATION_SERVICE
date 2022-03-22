@@ -13,7 +13,8 @@ type AuthUser interface {
 	GenerateTokensByAuthUser(user *authProto.User) (*authProto.GeneratedTokens, error)
 	ParseToken(token string) (*authProto.UserRole, error)
 	RefreshTokens(refreshToken string) (*authProto.GeneratedTokens, error)
-	CheckRoleRights(neededPerms []string, neededRole string, givenPerms string, givenRole string) error
+	CheckRole(neededRole []string, givenRole string) error
+	CheckRights(neededPerms []string, givenPerms string) error
 
 	GetRoleById(id int) (*model.Role, error)
 	GetAllRoles() ([]model.Role, error)

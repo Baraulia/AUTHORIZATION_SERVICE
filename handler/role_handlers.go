@@ -19,8 +19,8 @@ import (
 // @Failure 500 {object} model.ErrorResponse
 // @Router /roles/{id} [get]
 func (h *Handler) getRoleById(ctx *gin.Context) {
-	necessaryRole := "Superadmin"
-	if err := h.services.CheckRoleRights(nil, necessaryRole, ctx.GetString("perms"), ctx.GetString("role")); err != nil {
+	necessaryRole := []string{"Superadmin"}
+	if err := h.services.CheckRole(necessaryRole, ctx.GetString("role")); err != nil {
 		h.logger.Warnf("Handler getRoleById:not enough rights")
 		ctx.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "not enough rights"})
 		return
@@ -51,8 +51,8 @@ func (h *Handler) getRoleById(ctx *gin.Context) {
 // @Failure 500 {object} model.ErrorResponse
 // @Router /roles/ [post]
 func (h *Handler) createRole(ctx *gin.Context) {
-	necessaryRole := "Superadmin"
-	if err := h.services.CheckRoleRights(nil, necessaryRole, ctx.GetString("perms"), ctx.GetString("role")); err != nil {
+	necessaryRole := []string{"Superadmin"}
+	if err := h.services.CheckRole(necessaryRole, ctx.GetString("role")); err != nil {
 		h.logger.Warnf("Handler createRole:not enough rights")
 		ctx.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "not enough rights"})
 		return
@@ -85,8 +85,8 @@ func (h *Handler) createRole(ctx *gin.Context) {
 // @Failure 500 {object} model.ErrorResponse
 // @Router /roles/{id}/perms [post]
 func (h *Handler) bindRoleWithPerms(ctx *gin.Context) {
-	necessaryRole := "Superadmin"
-	if err := h.services.CheckRoleRights(nil, necessaryRole, ctx.GetString("perms"), ctx.GetString("role")); err != nil {
+	necessaryRole := []string{"Superadmin"}
+	if err := h.services.CheckRole(necessaryRole, ctx.GetString("role")); err != nil {
 		h.logger.Warnf("Handler bindRoleWithPerms:not enough rights")
 		ctx.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "not enough rights"})
 		return
@@ -115,8 +115,8 @@ func (h *Handler) bindRoleWithPerms(ctx *gin.Context) {
 // @Failure 500 {object} model.ErrorResponse
 // @Router /roles/ [get]
 func (h *Handler) getAllRoles(ctx *gin.Context) {
-	necessaryRole := "Superadmin"
-	if err := h.services.CheckRoleRights(nil, necessaryRole, ctx.GetString("perms"), ctx.GetString("role")); err != nil {
+	necessaryRole := []string{"Superadmin"}
+	if err := h.services.CheckRole(necessaryRole, ctx.GetString("role")); err != nil {
 		h.logger.Warnf("Handler getAllRoles:not enough rights")
 		ctx.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "not enough rights"})
 		return
@@ -141,8 +141,8 @@ func (h *Handler) getAllRoles(ctx *gin.Context) {
 // @Failure 500 {object} model.ErrorResponse
 // @Router /roles/{id}/perms [get]
 func (h *Handler) getPermsByRoleId(ctx *gin.Context) {
-	necessaryRole := "Superadmin"
-	if err := h.services.AuthUser.CheckRoleRights(nil, necessaryRole, ctx.GetString("perms"), ctx.GetString("role")); err != nil {
+	necessaryRole := []string{"Superadmin"}
+	if err := h.services.CheckRole(necessaryRole, ctx.GetString("role")); err != nil {
 		h.logger.Warnf("Handler getPermsByRoleId:not enough rights")
 		ctx.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "not enough rights"})
 		return

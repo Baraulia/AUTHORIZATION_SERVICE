@@ -40,7 +40,7 @@ func main() {
 	port := os.Getenv("API_SERVER_PORT")
 	serv := new(server.Server)
 
-	service.Secret = os.Getenv("TOKEN_SEC")
+	service.Secret = os.Getenv("TOKEN_SECRET")
 
 	go func() {
 		err := serv.Run(port, handlers.InitRoutes())

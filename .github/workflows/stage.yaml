@@ -63,7 +63,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           passphrase: ${{ secrets.PASSPHRASE }}
           key: ${{ secrets.SSHKEY }}
-          envs: IMAGE_NAME,REGISTRY,GITHUB_SHA,CONTAINER_NAME, DB_PORT, DB_USER, DB_PASSWORD, DB_DATABASE, DB_SSL_MODE, API_SERVER_PORT, TOKEN_SEC
+          envs: IMAGE_NAME,REGISTRY,GITHUB_SHA,CONTAINER_NAME, DB_PORT, DB_USER, DB_PASSWORD, DB_DATABASE, DB_SSL_MODE, API_SERVER_PORT, TOKEN_SECRET
           script: |
             # Login into Digital Ocean Registry
             docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} $(echo $REGISTRY)
@@ -80,10 +80,10 @@ jobs:
             export DB_DATABASE=${{ secrets.DB_DATABASE }}
             export DB_SSL_MODE=${{ secrets.DB_SSL_MODE }}
             export API_SERVER_PORT=${{ secrets.API_SERVER_PORT }}
-            export TOKEN_SEC=${{ secrets.TOKEN_SEC }}
+            export TOKEN_SECRET=${{ secrets.TOKEN_SECRET }}
             # Run a new container from a new image
             docker run -e AUTH_SERVER_URL -e DB_PORT -e DB_USER -e DB_PASSWORD -e HOST -e DB_DATABASE \
-            -e DB_SSL_MODE -e API_SERVER_PORT -e TOKEN_SEC -d \
+            -e DB_SSL_MODE -e API_SERVER_PORT -e TOKEN_SECRET -d \
             --restart always \
             --publish 8082:8080 \
             --publish 8090:8090 \

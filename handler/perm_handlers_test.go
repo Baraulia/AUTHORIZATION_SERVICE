@@ -15,7 +15,7 @@ import (
 )
 
 func TestHandler_getPermsByRoleId(t *testing.T) {
-	type mockBehaviorCheck func(s *mock_service.MockAuthUser, perms, role string)
+	type mockBehaviorCheck func(s *mock_service.MockAuthUser, role string)
 	type mockBehaviorParseToken func(s *mock_service.MockAuthUser, token string)
 	type mockBehavior func(s *mock_service.MockAuthUser, id int)
 
@@ -23,7 +23,6 @@ func TestHandler_getPermsByRoleId(t *testing.T) {
 		name                   string
 		input                  string
 		id                     int
-		inputPerms             string
 		inputRole              string
 		inputToken             string
 		mockBehaviorParseToken mockBehaviorParseToken
@@ -36,7 +35,6 @@ func TestHandler_getPermsByRoleId(t *testing.T) {
 			name:       "OK",
 			input:      "1",
 			id:         1,
-			inputPerms: "",
 			inputRole:  "Superadmin",
 			inputToken: "testToken",
 			mockBehaviorParseToken: func(s *mock_service.MockAuthUser, token string) {
@@ -46,8 +44,8 @@ func TestHandler_getPermsByRoleId(t *testing.T) {
 					Permissions: "",
 				}, nil)
 			},
-			mockBehaviorCheck: func(s *mock_service.MockAuthUser, perms, role string) {
-				s.EXPECT().CheckRoleRights(nil, "Superadmin", perms, role).Return(nil)
+			mockBehaviorCheck: func(s *mock_service.MockAuthUser, role string) {
+				s.EXPECT().CheckRole([]string{"Superadmin"}, role).Return(nil)
 			},
 			mockBehavior: func(s *mock_service.MockAuthUser, id int) {
 				s.EXPECT().GetPermsByRoleId(id).Return([]model.Permission{
@@ -68,7 +66,6 @@ func TestHandler_getPermsByRoleId(t *testing.T) {
 			name:       "invalid request",
 			input:      "a",
 			id:         1,
-			inputPerms: "",
 			inputRole:  "Superadmin",
 			inputToken: "testToken",
 			mockBehaviorParseToken: func(s *mock_service.MockAuthUser, token string) {
@@ -78,8 +75,8 @@ func TestHandler_getPermsByRoleId(t *testing.T) {
 					Permissions: "",
 				}, nil)
 			},
-			mockBehaviorCheck: func(s *mock_service.MockAuthUser, perms, role string) {
-				s.EXPECT().CheckRoleRights(nil, "Superadmin", perms, role).Return(nil)
+			mockBehaviorCheck: func(s *mock_service.MockAuthUser, role string) {
+				s.EXPECT().CheckRole([]string{"Superadmin"}, role).Return(nil)
 			},
 			mockBehavior: func(s *mock_service.MockAuthUser, id int) {},
 
@@ -90,7 +87,6 @@ func TestHandler_getPermsByRoleId(t *testing.T) {
 			name:       "server error",
 			input:      "1",
 			id:         1,
-			inputPerms: "",
 			inputRole:  "Superadmin",
 			inputToken: "testToken",
 			mockBehaviorParseToken: func(s *mock_service.MockAuthUser, token string) {
@@ -100,8 +96,8 @@ func TestHandler_getPermsByRoleId(t *testing.T) {
 					Permissions: "",
 				}, nil)
 			},
-			mockBehaviorCheck: func(s *mock_service.MockAuthUser, perms, role string) {
-				s.EXPECT().CheckRoleRights(nil, "Superadmin", perms, role).Return(nil)
+			mockBehaviorCheck: func(s *mock_service.MockAuthUser, role string) {
+				s.EXPECT().CheckRole([]string{"Superadmin"}, role).Return(nil)
 			},
 			mockBehavior: func(s *mock_service.MockAuthUser, id int) {
 				s.EXPECT().GetPermsByRoleId(id).Return(nil, fmt.Errorf("server error"))
@@ -118,7 +114,7 @@ func TestHandler_getPermsByRoleId(t *testing.T) {
 			defer c.Finish()
 			getPerm := mock_service.NewMockAuthUser(c)
 			testCase.mockBehaviorParseToken(getPerm, testCase.inputToken)
-			testCase.mockBehaviorCheck(getPerm, testCase.inputPerms, testCase.inputRole)
+			testCase.mockBehaviorCheck(getPerm, testCase.inputRole)
 			testCase.mockBehavior(getPerm, testCase.id)
 			logger := logging.GetLogger()
 			services := &service.Service{AuthUser: getPerm}
@@ -145,13 +141,12 @@ func TestHandler_getPermsByRoleId(t *testing.T) {
 }
 
 func TestHandler_getAllPerms(t *testing.T) {
-	type mockBehaviorCheck func(s *mock_service.MockAuthUser, perms, role string)
+	type mockBehaviorCheck func(s *mock_service.MockAuthUser, role string)
 	type mockBehaviorParseToken func(s *mock_service.MockAuthUser, token string)
 	type mockBehavior func(s *mock_service.MockAuthUser)
 
 	testTable := []struct {
 		name                   string
-		inputPerms             string
 		inputRole              string
 		inputToken             string
 		mockBehaviorParseToken mockBehaviorParseToken
@@ -162,7 +157,6 @@ func TestHandler_getAllPerms(t *testing.T) {
 	}{
 		{
 			name:       "OK",
-			inputPerms: "",
 			inputRole:  "Superadmin",
 			inputToken: "testToken",
 			mockBehaviorParseToken: func(s *mock_service.MockAuthUser, token string) {
@@ -172,8 +166,8 @@ func TestHandler_getAllPerms(t *testing.T) {
 					Permissions: "",
 				}, nil)
 			},
-			mockBehaviorCheck: func(s *mock_service.MockAuthUser, perms, role string) {
-				s.EXPECT().CheckRoleRights(nil, "Superadmin", perms, role).Return(nil)
+			mockBehaviorCheck: func(s *mock_service.MockAuthUser, role string) {
+				s.EXPECT().CheckRole([]string{"Superadmin"}, role).Return(nil)
 			},
 			mockBehavior: func(s *mock_service.MockAuthUser) {
 				s.EXPECT().GetAllPerms().Return([]model.Permission{
@@ -192,7 +186,6 @@ func TestHandler_getAllPerms(t *testing.T) {
 		},
 		{
 			name:       "OK",
-			inputPerms: "",
 			inputRole:  "Superadmin",
 			inputToken: "testToken",
 			mockBehaviorParseToken: func(s *mock_service.MockAuthUser, token string) {
@@ -202,8 +195,8 @@ func TestHandler_getAllPerms(t *testing.T) {
 					Permissions: "",
 				}, nil)
 			},
-			mockBehaviorCheck: func(s *mock_service.MockAuthUser, perms, role string) {
-				s.EXPECT().CheckRoleRights(nil, "Superadmin", perms, role).Return(nil)
+			mockBehaviorCheck: func(s *mock_service.MockAuthUser, role string) {
+				s.EXPECT().CheckRole([]string{"Superadmin"}, role).Return(nil)
 			},
 			mockBehavior: func(s *mock_service.MockAuthUser) {
 				s.EXPECT().GetAllPerms().Return([]model.Permission{
@@ -222,7 +215,6 @@ func TestHandler_getAllPerms(t *testing.T) {
 		},
 		{
 			name:       "server error",
-			inputPerms: "",
 			inputRole:  "Superadmin",
 			inputToken: "testToken",
 			mockBehaviorParseToken: func(s *mock_service.MockAuthUser, token string) {
@@ -232,8 +224,8 @@ func TestHandler_getAllPerms(t *testing.T) {
 					Permissions: "",
 				}, nil)
 			},
-			mockBehaviorCheck: func(s *mock_service.MockAuthUser, perms, role string) {
-				s.EXPECT().CheckRoleRights(nil, "Superadmin", perms, role).Return(nil)
+			mockBehaviorCheck: func(s *mock_service.MockAuthUser, role string) {
+				s.EXPECT().CheckRole([]string{"Superadmin"}, role).Return(nil)
 			},
 			mockBehavior: func(s *mock_service.MockAuthUser) {
 				s.EXPECT().GetAllPerms().Return(nil, fmt.Errorf("server error"))
@@ -250,7 +242,7 @@ func TestHandler_getAllPerms(t *testing.T) {
 			defer c.Finish()
 			getPerm := mock_service.NewMockAuthUser(c)
 			testCase.mockBehaviorParseToken(getPerm, testCase.inputToken)
-			testCase.mockBehaviorCheck(getPerm, testCase.inputPerms, testCase.inputRole)
+			testCase.mockBehaviorCheck(getPerm, testCase.inputRole)
 			testCase.mockBehavior(getPerm)
 			logger := logging.GetLogger()
 			services := &service.Service{AuthUser: getPerm}
@@ -277,7 +269,7 @@ func TestHandler_getAllPerms(t *testing.T) {
 }
 
 func TestHandler_createPerm(t *testing.T) {
-	type mockBehaviorCheck func(s *mock_service.MockAuthUser, perms, role string)
+	type mockBehaviorCheck func(s *mock_service.MockAuthUser, role string)
 	type mockBehaviorParseToken func(s *mock_service.MockAuthUser, token string)
 	type mockBehavior func(s *mock_service.MockAuthUser, role *model.CreatePerm)
 
@@ -285,7 +277,6 @@ func TestHandler_createPerm(t *testing.T) {
 		name                   string
 		inputBody              string
 		inputPerm              *model.CreatePerm
-		inputPerms             string
 		inputRole              string
 		inputToken             string
 		mockBehaviorParseToken mockBehaviorParseToken
@@ -298,7 +289,6 @@ func TestHandler_createPerm(t *testing.T) {
 			name:       "OK",
 			inputBody:  `{"name":"test"}`,
 			inputPerm:  &model.CreatePerm{Name: "test"},
-			inputPerms: "",
 			inputRole:  "Superadmin",
 			inputToken: "testToken",
 			mockBehaviorParseToken: func(s *mock_service.MockAuthUser, token string) {
@@ -308,8 +298,8 @@ func TestHandler_createPerm(t *testing.T) {
 					Permissions: "",
 				}, nil)
 			},
-			mockBehaviorCheck: func(s *mock_service.MockAuthUser, perms, role string) {
-				s.EXPECT().CheckRoleRights(nil, "Superadmin", perms, role).Return(nil)
+			mockBehaviorCheck: func(s *mock_service.MockAuthUser, role string) {
+				s.EXPECT().CheckRole([]string{"Superadmin"}, role).Return(nil)
 			},
 			mockBehavior: func(s *mock_service.MockAuthUser, perm *model.CreatePerm) {
 				s.EXPECT().CreatePermission(perm.Name).Return(1, nil)
@@ -321,7 +311,6 @@ func TestHandler_createPerm(t *testing.T) {
 			name:       "Invalid request",
 			inputBody:  `{"name":1}`,
 			inputPerm:  &model.CreatePerm{},
-			inputPerms: "",
 			inputRole:  "Superadmin",
 			inputToken: "testToken",
 			mockBehaviorParseToken: func(s *mock_service.MockAuthUser, token string) {
@@ -331,8 +320,8 @@ func TestHandler_createPerm(t *testing.T) {
 					Permissions: "",
 				}, nil)
 			},
-			mockBehaviorCheck: func(s *mock_service.MockAuthUser, perms, role string) {
-				s.EXPECT().CheckRoleRights(nil, "Superadmin", perms, role).Return(nil)
+			mockBehaviorCheck: func(s *mock_service.MockAuthUser, role string) {
+				s.EXPECT().CheckRole([]string{"Superadmin"}, role).Return(nil)
 			},
 			mockBehavior:        func(s *mock_service.MockAuthUser, perm *model.CreatePerm) {},
 			expectedStatusCode:  400,
@@ -342,7 +331,6 @@ func TestHandler_createPerm(t *testing.T) {
 			name:       "server error",
 			inputBody:  `{"name":"test"}`,
 			inputPerm:  &model.CreatePerm{Name: "test"},
-			inputPerms: "",
 			inputRole:  "Superadmin",
 			inputToken: "testToken",
 			mockBehaviorParseToken: func(s *mock_service.MockAuthUser, token string) {
@@ -352,8 +340,8 @@ func TestHandler_createPerm(t *testing.T) {
 					Permissions: "",
 				}, nil)
 			},
-			mockBehaviorCheck: func(s *mock_service.MockAuthUser, perms, role string) {
-				s.EXPECT().CheckRoleRights(nil, "Superadmin", perms, role).Return(nil)
+			mockBehaviorCheck: func(s *mock_service.MockAuthUser, role string) {
+				s.EXPECT().CheckRole([]string{"Superadmin"}, role).Return(nil)
 			},
 			mockBehavior: func(s *mock_service.MockAuthUser, perm *model.CreatePerm) {
 				s.EXPECT().CreatePermission(perm.Name).Return(0, fmt.Errorf("server error"))
@@ -370,7 +358,7 @@ func TestHandler_createPerm(t *testing.T) {
 			defer c.Finish()
 			getPerm := mock_service.NewMockAuthUser(c)
 			testCase.mockBehaviorParseToken(getPerm, testCase.inputToken)
-			testCase.mockBehaviorCheck(getPerm, testCase.inputPerms, testCase.inputRole)
+			testCase.mockBehaviorCheck(getPerm, testCase.inputRole)
 			testCase.mockBehavior(getPerm, testCase.inputPerm)
 			logger := logging.GetLogger()
 			services := &service.Service{AuthUser: getPerm}

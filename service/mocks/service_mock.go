@@ -64,18 +64,32 @@ func (mr *MockAuthUserMockRecorder) BindRoleWithPerms(rp interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BindRoleWithPerms", reflect.TypeOf((*MockAuthUser)(nil).BindRoleWithPerms), rp)
 }
 
-// CheckRoleRights mocks base method.
-func (m *MockAuthUser) CheckRoleRights(neededPerms []string, neededRole, givenPerms, givenRole string) error {
+// CheckRights mocks base method.
+func (m *MockAuthUser) CheckRights(neededPerms []string, givenPerms string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CheckRoleRights", neededPerms, neededRole, givenPerms, givenRole)
+	ret := m.ctrl.Call(m, "CheckRights", neededPerms, givenPerms)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// CheckRoleRights indicates an expected call of CheckRoleRights.
-func (mr *MockAuthUserMockRecorder) CheckRoleRights(neededPerms, neededRole, givenPerms, givenRole interface{}) *gomock.Call {
+// CheckRights indicates an expected call of CheckRights.
+func (mr *MockAuthUserMockRecorder) CheckRights(neededPerms, givenPerms interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckRoleRights", reflect.TypeOf((*MockAuthUser)(nil).CheckRoleRights), neededPerms, neededRole, givenPerms, givenRole)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckRights", reflect.TypeOf((*MockAuthUser)(nil).CheckRights), neededPerms, givenPerms)
+}
+
+// CheckRole mocks base method.
+func (m *MockAuthUser) CheckRole(neededRole []string, givenRole string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CheckRole", neededRole, givenRole)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CheckRole indicates an expected call of CheckRole.
+func (mr *MockAuthUserMockRecorder) CheckRole(neededRole, givenRole interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckRole", reflect.TypeOf((*MockAuthUser)(nil).CheckRole), neededRole, givenRole)
 }
 
 // CreatePermission mocks base method.
