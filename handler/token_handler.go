@@ -16,7 +16,7 @@ import (
 // @Failure 401 {object} model.ErrorResponse
 // @Router /refresh [get]
 func (h *Handler) refreshToken(ctx *gin.Context) {
-	header := ctx.GetHeader("Refresh")
+	header := ctx.GetHeader("refresh_token")
 	if header == "" {
 		h.logger.Errorf("refreshToken:empty refresh header")
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, model.ErrorResponse{Message: "empty refresh header"})
