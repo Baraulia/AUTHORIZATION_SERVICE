@@ -14,7 +14,7 @@ import (
 )
 
 func TestHandler_refreshToken(t *testing.T) {
-	type mockBehavior func(s *mock_service.MockAuthorization, token string)
+	type mockBehavior func(s *mock_service.MockAuthUser, token string)
 
 	testTable := []struct {
 		name                string
@@ -30,7 +30,7 @@ func TestHandler_refreshToken(t *testing.T) {
 			headerName:  "refresh_token",
 			headerValue: "token",
 			token:       "token",
-			mockBehavior: func(s *mock_service.MockAuthorization, token string) {
+			mockBehavior: func(s *mock_service.MockAuthUser, token string) {
 				s.EXPECT().RefreshTokens(token).Return(&authProto.GeneratedTokens{
 					AccessToken:  "accessToken",
 					RefreshToken: "refreshToken",
@@ -44,7 +44,7 @@ func TestHandler_refreshToken(t *testing.T) {
 			headerName:          "refresh_token",
 			headerValue:         "",
 			token:               "",
-			mockBehavior:        func(s *mock_service.MockAuthorization, token string) {},
+			mockBehavior:        func(s *mock_service.MockAuthUser, token string) {},
 			expectedStatusCode:  401,
 			expectedRequestBody: `{"message":"empty refresh header"}`,
 		},
@@ -53,7 +53,7 @@ func TestHandler_refreshToken(t *testing.T) {
 			headerName:  "refresh_token",
 			headerValue: "token",
 			token:       "token",
-			mockBehavior: func(s *mock_service.MockAuthorization, token string) {
+			mockBehavior: func(s *mock_service.MockAuthUser, token string) {
 				s.EXPECT().RefreshTokens(token).Return(nil, errors.New("invalid token"))
 			},
 			expectedStatusCode:  401,
@@ -66,10 +66,10 @@ func TestHandler_refreshToken(t *testing.T) {
 			//Init dependencies
 			c := gomock.NewController(t)
 			defer c.Finish()
-			get := mock_service.NewMockAuthorization(c)
+			get := mock_service.NewMockAuthUser(c)
 			testCase.mockBehavior(get, testCase.token)
 			logger := logging.GetLogger()
-			services := &service.Service{Authorization: get}
+			services := &service.Service{AuthUser: get}
 			handler := NewHandler(services, logger)
 
 			//Init server

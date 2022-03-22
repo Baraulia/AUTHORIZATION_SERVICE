@@ -9,14 +9,13 @@ import (
 
 //go:generate mockgen -source=service.go -destination=mocks/service_mock.go
 
-type Authorization interface {
+type AuthUser interface {
 	GenerateTokensByAuthUser(user *authProto.User) (*authProto.GeneratedTokens, error)
 	ParseToken(token string) (*authProto.UserRole, error)
 	RefreshTokens(refreshToken string) (*authProto.GeneratedTokens, error)
-	CheckRights(token string, requiredRole string) (bool, error)
-}
+	CheckRole(neededRole []string, givenRole string) error
+	CheckRights(neededPerms []string, givenPerms string) error
 
-type RolePerm interface {
 	GetRoleById(id int) (*model.Role, error)
 	GetAllRoles() ([]model.Role, error)
 	CreateRole(role string) (int, error)
@@ -31,13 +30,11 @@ type RolePerm interface {
 }
 
 type Service struct {
-	RolePerm
-	Authorization
+	AuthUser
 }
 
 func NewService(rep *repository.Repository, logger logging.Logger) *Service {
 	return &Service{
-		RolePerm:      NewRolePermService(*rep, logger),
-		Authorization: NewAuthService(*rep, logger),
+		AuthUser: NewAuthUserService(*rep, logger),
 	}
 }

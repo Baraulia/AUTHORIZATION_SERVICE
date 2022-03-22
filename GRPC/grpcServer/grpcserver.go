@@ -35,11 +35,11 @@ func NewGRPCServer(service *service.Service) {
 
 }
 func (g *GRPCServer) GetUserWithRights(ctx context.Context, request *authProto.AccessToken) (*authProto.UserRole, error) {
-	return g.service.Authorization.ParseToken(request.AccessToken)
+	return g.service.AuthUser.ParseToken(request.AccessToken)
 }
 
 func (g *GRPCServer) BindUserAndRole(ctx context.Context, user *authProto.User) (*authProto.ResultBinding, error) {
-	res, err := g.service.RolePerm.AddRoleToUser(user)
+	res, err := g.service.AuthUser.AddRoleToUser(user)
 	if err != nil {
 		return nil, err
 	}

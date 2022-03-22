@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"github.com/golang-jwt/jwt"
 	authProto "stlab.itechart-group.com/go/food_delivery/authorization_service/GRPC"
-	"stlab.itechart-group.com/go/food_delivery/authorization_service/pkg/logging"
-	"stlab.itechart-group.com/go/food_delivery/authorization_service/repository"
 	"strings"
 	"time"
 )
@@ -16,22 +14,13 @@ var Secret string
 const AccessTokenTTL = time.Minute * 15
 const RefreshTokenTTL = time.Hour * 24 * 30
 
-type AuthService struct {
-	logger logging.Logger
-	repo   repository.Repository
-}
-
-func NewAuthService(repo repository.Repository, logger logging.Logger) *AuthService {
-	return &AuthService{repo: repo, logger: logger}
-}
-
 type MyClaims struct {
 	UserId int32
 	Role   string
 	jwt.StandardClaims
 }
 
-func (a *AuthService) GenerateTokensByAuthUser(user *authProto.User) (*authProto.GeneratedTokens, error) {
+func (a *AuthUserService) GenerateTokensByAuthUser(user *authProto.User) (*authProto.GeneratedTokens, error) {
 	expired := time.Now().Add(AccessTokenTTL)
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, MyClaims{
 		UserId:         user.UserId,
@@ -63,7 +52,7 @@ func (a *AuthService) GenerateTokensByAuthUser(user *authProto.User) (*authProto
 
 }
 
-func (a *AuthService) ParseToken(token string) (*authProto.UserRole, error) {
+func (a *AuthUserService) ParseToken(token string) (*authProto.UserRole, error) {
 	claims, err := ParseGWTToken(token)
 	if err != nil {
 		return nil, err
@@ -91,7 +80,7 @@ func (a *AuthService) ParseToken(token string) (*authProto.UserRole, error) {
 	}, nil
 }
 
-func (a *AuthService) RefreshTokens(refreshToken string) (*authProto.GeneratedTokens, error) {
+func (a *AuthUserService) RefreshTokens(refreshToken string) (*authProto.GeneratedTokens, error) {
 	claims, err := ParseGWTToken(refreshToken)
 	if err != nil {
 		return nil, err
@@ -106,15 +95,30 @@ func (a *AuthService) RefreshTokens(refreshToken string) (*authProto.GeneratedTo
 	return a.GenerateTokensByAuthUser(&authProto.User{UserId: claims.UserId, Role: role.Name})
 }
 
-func (a *AuthService) CheckRights(token string, requiredRole string) (bool, error) {
-	userRole, err := a.ParseToken(token)
-	if err != nil {
-		return false, err
+func (a *AuthUserService) CheckRole(neededRoles []string, givenRole string) error {
+	neededRolesString := strings.Join(neededRoles, ",")
+	if !strings.Contains(neededRolesString, givenRole) {
+		return fmt.Errorf("not enough rights")
 	}
-	if userRole.Role != requiredRole {
-		return false, errors.New("no required rights")
+	return nil
+}
+
+func (a *AuthUserService) CheckRights(neededPerms []string, givenPerms string) error {
+	if neededPerms != nil {
+		ok := true
+		for _, perm := range neededPerms {
+			if !strings.Contains(givenPerms, perm) {
+				ok = false
+				return fmt.Errorf("not enough rights")
+			} else {
+				continue
+			}
+		}
+		if ok == true {
+			return nil
+		}
 	}
-	return true, nil
+	return nil
 }
 
 func ParseGWTToken(token string) (*MyClaims, error) {

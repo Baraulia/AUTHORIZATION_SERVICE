@@ -16,6 +16,9 @@ import (
 
 // @title Authorization Service
 // @description Authorization Service for Food Delivery Application
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 func main() {
 	logger := logging.GetLogger()
 	db, err := database.NewPostgresDB(database.PostgresDB{
@@ -37,7 +40,7 @@ func main() {
 	port := os.Getenv("API_SERVER_PORT")
 	serv := new(server.Server)
 
-	service.Secret = os.Getenv("TOKEN_SEC")
+	service.Secret = os.Getenv("TOKEN_SECRET")
 
 	go func() {
 		err := serv.Run(port, handlers.InitRoutes())

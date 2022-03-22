@@ -1,0 +1,296 @@
+definitions:
+  authProto.GeneratedTokens:
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+    type: object
+  model.BindRoleWithPermission:
+    properties:
+      permissions_id:
+        items:
+          type: integer
+        type: array
+      role_id:
+        type: integer
+    type: object
+  model.CreatePerm:
+    properties:
+      name:
+        type: string
+    type: object
+  model.CreateRole:
+    properties:
+      name:
+        type: string
+    type: object
+  model.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  model.ListPerms:
+    properties:
+      perms:
+        items:
+          $ref: '#/definitions/model.Permission'
+        type: array
+    type: object
+  model.ListRoles:
+    properties:
+      roles:
+        items:
+          $ref: '#/definitions/model.Role'
+        type: array
+    type: object
+  model.Permission:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  model.Role:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: Authorization Service for Food Delivery Application
+  title: Authorization Service
+paths:
+  /perms/:
+    get:
+      consumes:
+      - application/json
+      description: gets all permissions
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ListPerms'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: getAllPerms
+      tags:
+      - permission
+    post:
+      consumes:
+      - application/json
+      description: create new permission
+      parameters:
+      - description: Perm
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreatePerm'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              type: integer
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: createPerm
+      tags:
+      - permission
+  /refresh:
+    get:
+      consumes:
+      - application/json
+      description: regeneration tokens by refresh token
+      parameters:
+      - description: Refresh token
+        in: header
+        name: refresh_token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/authProto.GeneratedTokens'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: refreshToken
+      tags:
+      - refresh
+  /roles/:
+    get:
+      consumes:
+      - application/json
+      description: gets all roles
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ListRoles'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: getAllRoles
+      tags:
+      - roles
+    post:
+      consumes:
+      - application/json
+      description: create new role
+      parameters:
+      - description: Role
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateRole'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: integer
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: createRole
+      tags:
+      - roles
+  /roles/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get role by id
+      parameters:
+      - description: RoleID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Role'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: getRoleById
+      tags:
+      - roles
+  /roles/{id}/perms:
+    get:
+      consumes:
+      - application/json
+      description: get permissions bound with role
+      parameters:
+      - description: Role ID
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ListPerms'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: getPermsByRoleId
+      tags:
+      - roles
+    post:
+      consumes:
+      - application/json
+      description: binding role with permissions
+      parameters:
+      - description: Role and Perms
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.BindRoleWithPermission'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: ""
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: bindRoleWithPerms
+      tags:
+      - roles
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
