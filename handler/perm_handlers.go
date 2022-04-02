@@ -9,7 +9,7 @@ import (
 // @Summary createPerm
 // @Security ApiKeyAuth
 // @Tags permission
-// @Description create new permission
+// @Description create new permission(only for Superadmin)
 // @Accept  json
 // @Produce  json
 // @Param input body model.CreatePerm true "Perm"
@@ -43,7 +43,7 @@ func (h *Handler) createPerm(ctx *gin.Context) {
 // @Summary getAllPerms
 // @Security ApiKeyAuth
 // @Tags permission
-// @Description gets all permissions
+// @Description gets all permissions(only for Superadmin)
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} model.ListPerms

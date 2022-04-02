@@ -67,7 +67,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: gets all permissions
+      description: gets all permissions(only for Superadmin)
       produces:
       - application/json
       responses:
@@ -87,7 +87,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: create new permission
+      description: create new permission(only for Superadmin)
       parameters:
       - description: Perm
         in: body
@@ -146,7 +146,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: gets all roles
+      description: gets all roles(only for Superadmin)
       produces:
       - application/json
       responses:
@@ -166,7 +166,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: create new role
+      description: create new role(only for Superadmin)
       parameters:
       - description: Role
         in: body
@@ -200,7 +200,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: get role by id
+      description: get role by id(only for Superadmin)
       parameters:
       - description: RoleID
         in: path
@@ -231,7 +231,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: get permissions bound with role
+      description: get permissions bound with role(only for Superadmin)
       parameters:
       - description: Role ID
         format: int64
@@ -262,7 +262,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: binding role with permissions
+      description: binding role with permissions(only for Superadmin)
       parameters:
       - description: Role and Perms
         in: body

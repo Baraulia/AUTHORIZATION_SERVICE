@@ -23,7 +23,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "gets all permissions",
+                "description": "gets all permissions(only for Superadmin)",
                 "consumes": [
                     "application/json"
                 ],
@@ -55,7 +55,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "create new permission",
+                "description": "create new permission(only for Superadmin)",
                 "consumes": [
                     "application/json"
                 ],
@@ -147,7 +147,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "gets all roles",
+                "description": "gets all roles(only for Superadmin)",
                 "consumes": [
                     "application/json"
                 ],
@@ -179,7 +179,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "create new role",
+                "description": "create new role(only for Superadmin)",
                 "consumes": [
                     "application/json"
                 ],
@@ -233,7 +233,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "get role by id",
+                "description": "get role by id(only for Superadmin)",
                 "consumes": [
                     "application/json"
                 ],
@@ -282,7 +282,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "get permissions bound with role",
+                "description": "get permissions bound with role(only for Superadmin)",
                 "consumes": [
                     "application/json"
                 ],
@@ -330,7 +330,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "binding role with permissions",
+                "description": "binding role with permissions(only for Superadmin)",
                 "consumes": [
                     "application/json"
                 ],

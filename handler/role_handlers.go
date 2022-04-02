@@ -10,7 +10,7 @@ import (
 // @Summary getRoleById
 // @Security ApiKeyAuth
 // @Tags roles
-// @Description get role by id
+// @Description get role by id(only for Superadmin)
 // @Accept  json
 // @Produce  json
 // @Param id path int true "RoleID"
@@ -42,7 +42,7 @@ func (h *Handler) getRoleById(ctx *gin.Context) {
 // @Summary createRole
 // @Security ApiKeyAuth
 // @Tags roles
-// @Description create new role
+// @Description create new role(only for Superadmin)
 // @Accept  json
 // @Produce  json
 // @Param input body model.CreateRole true "Role"
@@ -76,7 +76,7 @@ func (h *Handler) createRole(ctx *gin.Context) {
 // @Summary bindRoleWithPerms
 // @Security ApiKeyAuth
 // @Tags roles
-// @Description binding role with permissions
+// @Description binding role with permissions(only for Superadmin)
 // @Accept  json
 // @Produce  json
 // @Param input body model.BindRoleWithPermission true "Role and Perms"
@@ -108,7 +108,7 @@ func (h *Handler) bindRoleWithPerms(ctx *gin.Context) {
 // @Summary getAllRoles
 // @Security ApiKeyAuth
 // @Tags roles
-// @Description gets all roles
+// @Description gets all roles(only for Superadmin)
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} model.ListRoles
@@ -132,7 +132,7 @@ func (h *Handler) getAllRoles(ctx *gin.Context) {
 // @Summary getPermsByRoleId
 // @Security ApiKeyAuth
 // @Tags roles
-// @Description get permissions bound with role
+// @Description get permissions bound with role(only for Superadmin)
 // @Accept  json
 // @Produce  json
 // @Param id path int true "Role ID" Format(int64)
